@@ -12,7 +12,6 @@ import static org.mockito.Mockito.*;
 public class ProductMapperShould {
 
     private ProductMapper productMapper;
-    private ProductMapper spyProductMapper;
     private ProductDto productDto;
     private ProductPojo productPojo;
     private Exception expectedException;
@@ -21,24 +20,20 @@ public class ProductMapperShould {
     public void mapToPojo() {
         givenProductDto();
         givenProductMapper();
-        givenSpyProductMapper();
 
         whenProductDtoIsMapping();
 
         thenProductDtoIsMapped();
     }
-
     @Test
     public void mapToDto() {
         givenProductPojo();
         givenProductMapper();
-        givenSpyProductMapper();
 
         whenProductPojoIsMapping();
 
         thenProductPojoIsMapped();
     }
-
     private void givenProductDto() {
         productDto = ProductDto.builder()
                 .sku("SKU")
@@ -47,7 +42,6 @@ public class ProductMapperShould {
                 .cost(1)
                 .build();
     }
-
     private void givenProductPojo() {
         productPojo = ProductPojo.builder()
                 .sku("SKU")
@@ -56,36 +50,28 @@ public class ProductMapperShould {
                 .cost(1)
                 .build();
     }
-
     private void givenProductMapper() {
-        productMapper = new ProductMapper();
+        productMapper = spy(new ProductMapper());
     }
-
-    private void givenSpyProductMapper() {
-        spyProductMapper = spy(productMapper);
-    }
-
     private void whenProductDtoIsMapping() {
         try {
-            productPojo = spyProductMapper.toPojo(productDto);
+            productPojo = productMapper.toPojo(productDto);
         } catch (Exception exception) {
             expectedException = exception;
             exception.printStackTrace();
         }
     }
-
     private void whenProductPojoIsMapping() {
         try {
-            productDto = spyProductMapper.toDto(productPojo);
+            productDto = productMapper.toDto(productPojo);
         } catch (Exception exception) {
             expectedException = exception;
             exception.printStackTrace();
         }
     }
-
     private void thenProductDtoIsMapped() {
-        verify(spyProductMapper, times(1)).toPojo(productDto);
-        verify(spyProductMapper, times(0)).toDto(any());
+        verify(productMapper, times(1)).toPojo(productDto);
+        verify(productMapper, times(0)).toDto(any());
         then(expectedException).isNull();
         then(productPojo.getSku()).isEqualTo(productDto.getSku());
         then(productPojo.getName()).isEqualTo(productDto.getName());
@@ -93,10 +79,9 @@ public class ProductMapperShould {
         then(productPojo.getCost()).isEqualTo(productDto.getCost());
         then(productPojo.getId()).isNull();
     }
-
     private void thenProductPojoIsMapped() {
-        verify(spyProductMapper, times(1)).toDto(productPojo);
-        verify(spyProductMapper, times(0)).toPojo(any());
+        verify(productMapper, times(1)).toDto(productPojo);
+        verify(productMapper, times(0)).toPojo(any());
         then(expectedException).isNull();
         then(productDto.getSku()).isEqualTo(productPojo.getSku());
         then(productDto.getName()).isEqualTo(productPojo.getName());

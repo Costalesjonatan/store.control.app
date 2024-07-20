@@ -12,28 +12,28 @@ public class ProductValidator {
         validatePrice(productDto.getPrice(), productDto.getCost());
     }
     public void validateUpdate(ProductDto productDto) {
+        validateSku(productDto.getSku());
         validateName(productDto.getName());
         validateCost(productDto.getCost());
         validatePrice(productDto.getPrice(), productDto.getCost());
     }
     public void validateSku(String sku) {
-        if(sku == null || sku.trim().isBlank() || sku.trim().isBlank()) {
-            throw new IllegalArgumentException("Invalid SKU.");
-        }
+        if(validateString(sku)) throw new IllegalArgumentException("Invalid SKU.");
     }
-    public void validateName(String name) {
-        if(name == null || name.trim().isBlank() || name.trim().isBlank()) {
-            throw new IllegalArgumentException("Invalid name.");
-        }
+    private void validateName(String name) {
+        if(validateString(name)) throw new IllegalArgumentException("Invalid name.");
     }
-    public void validateCost(Integer cost) {
+    private void validateCost(Integer cost) {
         if(cost == null || cost == 0) {
             throw new IllegalArgumentException("Invalid cost.");
         }
     }
-    public void validatePrice(Integer price, Integer cost) {
+    private void validatePrice(Integer price, Integer cost) {
         if(cost == null || cost == 0 || price < cost) {
             throw new IllegalArgumentException("Invalid cost.");
         }
+    }
+    private boolean validateString(String string) {
+        return (string == null || string.isBlank() || string.trim().isEmpty());
     }
 }
