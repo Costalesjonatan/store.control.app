@@ -12,8 +12,8 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 class ProductProtocolRepository implements ProductRepositoryProtocol {
-    private ProductJpaRepository productJpaRepository;
-    private ProductPersistenceMapper productPersistenceMapper;
+    private final ProductJpaRepository productJpaRepository;
+    private final ProductPersistenceMapper productPersistenceMapper;
     @Override
     public void createProduct(ProductPojo productPojo) {
         Optional<ProductEntity> optionalProductEntity = productJpaRepository.findBySku(productPojo.getSku());
