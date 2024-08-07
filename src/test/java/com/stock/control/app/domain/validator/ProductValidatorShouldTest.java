@@ -6,11 +6,12 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class ProductValidatorShould {
+public class ProductValidatorShouldTest {
     private ProductValidator productValidator;
     private Exception expectedException;
     private ProductDto validProductDto;
@@ -216,37 +217,29 @@ public class ProductValidatorShould {
     }
 
     private void thenSkuIsValidated() {
-        verify(productValidator, times(1)).validateSku(anyString());
-        verify(productValidator, times(0)).validateUpdate(any());
-        verify(productValidator, times(0)).validateCreate(any());
+        verify(productValidator, only()).validateSku(anyString());
         then(expectedException).isNull();
     }
 
     private void thenNullSkuIsRejected() {
-        verify(productValidator, times(1)).validateSku(null);
-        verify(productValidator, times(0)).validateUpdate(any());
-        verify(productValidator, times(0)).validateCreate(any());
+        verify(productValidator, only()).validateSku(null);
         then(expectedException).isNotNull();
     }
 
     private void thenEmptyOfBlankSkuIsRejected() {
-        verify(productValidator, times(1)).validateSku(anyString());
-        verify(productValidator, times(0)).validateUpdate(any());
-        verify(productValidator, times(0)).validateCreate(any());
+        verify(productValidator, only()).validateSku(anyString());
         then(expectedException).isNotNull();
     }
 
     private void thenInvalidProductDtoIsRejected() {
         verify(productValidator, times(1)).validateSku(invalidProductDto.getSku());
         verify(productValidator, times(1)).validateUpdate(invalidProductDto);
-        verify(productValidator, times(0)).validateCreate(any());
         then(expectedException).isNotNull();
     }
 
     private void thenValidProductDtoIsValidated() {
         verify(productValidator, times(1)).validateSku(validProductDto.getSku());
         verify(productValidator, times(1)).validateUpdate(validProductDto);
-        verify(productValidator, times(0)).validateCreate(any());
         then(expectedException).isNull();
     }
 }

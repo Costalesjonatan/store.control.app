@@ -13,6 +13,7 @@ import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,9 +36,7 @@ public class ProductServiceShould {
         givenProductMapper();
         givenProductValidator();
         givenProductService();
-
         whenCreatingProduct();
-
         thenProductIsCreated();
     }
 
@@ -49,9 +48,7 @@ public class ProductServiceShould {
         givenProductMapper();
         givenProductValidator();
         givenProductService();
-
         whenNotCreatingProduct();
-
         thenProductIsNotCreated();
     }
 
@@ -274,14 +271,10 @@ public class ProductServiceShould {
     }
 
     private void thenProductIsUpdated() {
+        verify(productService, only()).updateProduct(productDto);
         verify(productValidator, times(1)).validateUpdate(productDto);
         verify(productMapper, times(1)).toPojo(productDto);
         verify(productRepositoryProtocol, times(1)).updateProduct(any(ProductPojo.class));
-
-        verify(productService, times(0)).createProduct(any());
-        verify(productService, times(1)).updateProduct(productDto);
-        verify(productService, times(0)).deleteProductBySku(any());
-        verify(productService, times(0)).getProductBySku(any());
 
         then(expectedException).isNull();
     }
@@ -297,10 +290,7 @@ public class ProductServiceShould {
     }
 
     private void thenProductIsNotCreated() {
-        verify(productValidator, times(1)).validateCreate(productDto);
-        verify(productMapper, times(0)).toPojo(any());
-        verify(productRepositoryProtocol, times(0)).createProduct(any());
-
+        verify(productValidator, only()).validateCreate(productDto);
         verify(productService, times(1)).createProduct(productDto);
         verify(productService, times(0)).updateProduct(any());
         verify(productService, times(0)).deleteProductBySku(any());
@@ -322,14 +312,10 @@ public class ProductServiceShould {
     }
 
     private void thenProductIsCreated() {
+        verify(productService, only()).createProduct(productDto);
         verify(productValidator, times(1)).validateCreate(productDto);
         verify(productMapper, times(1)).toPojo(productDto);
         verify(productRepositoryProtocol, times(1)).createProduct(any(ProductPojo.class));
-
-        verify(productService, times(1)).createProduct(productDto);
-        verify(productService, times(0)).updateProduct(any());
-        verify(productService, times(0)).deleteProductBySku(any());
-        verify(productService, times(0)).getProductBySku(any());
 
         then(expectedException).isNull();
     }

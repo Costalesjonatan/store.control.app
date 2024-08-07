@@ -5,9 +5,8 @@ import com.stock.control.app.rest.dto.ProductDto;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.BDDAssertions.then;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 
@@ -72,8 +71,7 @@ public class ProductMapperShould {
         }
     }
     private void thenProductDtoIsMapped() {
-        verify(productMapper, times(1)).toPojo(productDto);
-        verify(productMapper, times(0)).toDto(any());
+        verify(productMapper, only()).toPojo(productDto);
         then(expectedException).isNull();
         then(productPojo.getSku()).isEqualTo(productDto.getSku());
         then(productPojo.getName()).isEqualTo(productDto.getName());
@@ -82,8 +80,7 @@ public class ProductMapperShould {
         then(productPojo.getId()).isNull();
     }
     private void thenProductPojoIsMapped() {
-        verify(productMapper, times(1)).toDto(productPojo);
-        verify(productMapper, times(0)).toPojo(any());
+        verify(productMapper, only()).toDto(productPojo);
         then(expectedException).isNull();
         then(productDto.getSku()).isEqualTo(productPojo.getSku());
         then(productDto.getName()).isEqualTo(productPojo.getName());

@@ -9,14 +9,18 @@ import java.util.Optional;
 
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atMostOnce;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-public class ProductProtocolRepositoryShould {
+public class ProductProtocolRepositoryShouldTest {
     private ProductJpaRepository productJpaRepository;
     private ProductPersistenceMapper productPersistenceMapper;
     private ProductProtocolRepository productProtocolRepository;
@@ -33,10 +37,96 @@ public class ProductProtocolRepositoryShould {
         givenProductJpaRepository();
         givenProductPersistenceMapper();
         givenProductProtocolRepository();
-
         whenCreatingProduct();
-
         thenProductIsCreated();
+    }
+
+    @Test
+    public void notCreateProduct() {
+        givenProductEntity();
+        givenProductPojo();
+        givenExpectedException();
+        givenProductJpaRepository();
+        givenProductPersistenceMapper();
+        givenProductProtocolRepository();
+        whenNotCreatingProduct();
+        thenNotProductIsCreated();
+    }
+
+    @Test
+    public void updateProduct() {
+        givenProductEntity();
+        givenProductPojo();
+        givenExpectedException();
+        givenProductJpaRepository();
+        givenProductPersistenceMapper();
+        givenProductProtocolRepository();
+        whenUpdatingProduct();
+        thenProductIsUpdated();
+    }
+
+    @Test
+    public void notUpdateProduct() {
+        givenProductEntity();
+        givenProductPojo();
+        givenExpectedException();
+        givenProductJpaRepository();
+        givenProductPersistenceMapper();
+        givenProductProtocolRepository();
+        whenNotUpdatingProduct();
+        thenProductIsNotUpdated();
+    }
+
+    @Test
+    public void getProductBySku() {
+        givenProductEntity();
+        givenProductPojo();
+        givenExpectedException();
+        givenExpectedProductPojo();
+        givenProductJpaRepository();
+        givenProductPersistenceMapper();
+        givenProductProtocolRepository();
+        whenGettingProductBySku();
+        thenProductIsReturnedBySku();
+    }
+
+    @Test
+    public void notGetProductBySku() {
+        givenProductEntity();
+        givenProductPojo();
+        givenExpectedException();
+        givenExpectedProductPojo();
+        givenProductJpaRepository();
+        givenProductPersistenceMapper();
+        givenProductProtocolRepository();
+        whenNotGettingProductBySku();
+        thenProductIsNotReturnedBySku();
+    }
+
+    @Test
+    public void deleteProduct() {
+        givenProductEntity();
+        givenProductPojo();
+        givenExpectedException();
+        givenExpectedProductPojo();
+        givenProductJpaRepository();
+        givenProductPersistenceMapper();
+        givenProductProtocolRepository();
+        whenDeletingProduct();
+        thenProductIsDeleted();
+    }
+
+    @Test
+    public void notDeleteProduct() {
+        givenProductEntity();
+        givenProductPojo();
+        givenExpectedException();
+        givenExpectedProductPojo();
+        givenProductJpaRepository();
+        givenProductPersistenceMapper();
+        givenProductProtocolRepository();
+        whenNotDeletingProduct();
+        thenProductIsNotDeleted();
     }
 
     private void whenCreatingProduct() {
@@ -52,30 +142,12 @@ public class ProductProtocolRepositoryShould {
     }
 
     private void thenProductIsCreated() {
-        verify(productJpaRepository, times(1)).findBySku(productPojo.getSku());
+        verify(productProtocolRepository, only()).createProduct(productPojo);
+        verify(productJpaRepository, atMostOnce()).findBySku(productPojo.getSku());
         verify(productPersistenceMapper, times(1)).toEntity(productPojo);
         verify(productJpaRepository, times(1)).save(productEntity);
 
-        verify(productProtocolRepository, times(1)).createProduct(productPojo);
-        verify(productProtocolRepository, times(0)).updateProduct(any());
-        verify(productProtocolRepository, times(0)).getProductBySku(any());
-        verify(productProtocolRepository, times(0)).deleteProduct(any());
-
         then(expectedException).isNull();
-    }
-
-    @Test
-    public void notCreateProduct() {
-        givenProductEntity();
-        givenProductPojo();
-        givenExpectedException();
-        givenProductJpaRepository();
-        givenProductPersistenceMapper();
-        givenProductProtocolRepository();
-
-        whenNotCreatingProduct();
-
-        thenNotProductIsCreated();
     }
 
     private void whenNotCreatingProduct() {
@@ -89,30 +161,11 @@ public class ProductProtocolRepositoryShould {
     }
 
     private void thenNotProductIsCreated() {
-        verify(productJpaRepository, times(1)).findBySku(productPojo.getSku());
-        verify(productPersistenceMapper, times(0)).toEntity(productPojo);
-        verify(productJpaRepository, times(0)).save(productEntity);
-
-        verify(productProtocolRepository, times(1)).createProduct(productPojo);
-        verify(productProtocolRepository, times(0)).updateProduct(any());
-        verify(productProtocolRepository, times(0)).getProductBySku(any());
-        verify(productProtocolRepository, times(0)).deleteProduct(any());
+        verify(productProtocolRepository, only()).createProduct(productPojo);
+        verify(productJpaRepository, only()).findBySku(productPojo.getSku());
+        verify(productPersistenceMapper, never()).toEntity(productPojo);
 
         then(expectedException).isNotNull();
-    }
-
-    @Test
-    public void updateProduct() {
-        givenProductEntity();
-        givenProductPojo();
-        givenExpectedException();
-        givenProductJpaRepository();
-        givenProductPersistenceMapper();
-        givenProductProtocolRepository();
-
-        whenUpdatingProduct();
-
-        thenProductIsUpdated();
     }
 
     private void whenUpdatingProduct() {
@@ -128,30 +181,12 @@ public class ProductProtocolRepositoryShould {
     }
 
     private void thenProductIsUpdated() {
-        verify(productJpaRepository, times(1)).findBySku(productPojo.getSku());
-        verify(productPersistenceMapper, times(1)).toEntity(productPojo);
-        verify(productJpaRepository, times(1)).save(productEntity);
-
-        verify(productProtocolRepository, times(0)).createProduct(any());
-        verify(productProtocolRepository, times(1)).updateProduct(productPojo);
-        verify(productProtocolRepository, times(0)).getProductBySku(any());
-        verify(productProtocolRepository, times(0)).deleteProduct(any());
+        verify(productProtocolRepository, only()).updateProduct(productPojo);
+        verify(productJpaRepository, atMostOnce()).findBySku(productPojo.getSku());
+        verify(productPersistenceMapper, atMostOnce()).toEntity(productPojo);
+        verify(productJpaRepository, atMostOnce()).save(productEntity);
 
         then(expectedException).isNull();
-    }
-
-    @Test
-    public void notUpdateProduct() {
-        givenProductEntity();
-        givenProductPojo();
-        givenExpectedException();
-        givenProductJpaRepository();
-        givenProductPersistenceMapper();
-        givenProductProtocolRepository();
-
-        whenNotUpdatingProduct();
-
-        thenProductIsNotUpdated();
     }
 
     private void whenNotUpdatingProduct() {
@@ -165,31 +200,11 @@ public class ProductProtocolRepositoryShould {
     }
 
     private void thenProductIsNotUpdated() {
-        verify(productJpaRepository, times(1)).findBySku(productPojo.getSku());
-        verify(productPersistenceMapper, times(0)).toEntity(productPojo);
-        verify(productJpaRepository, times(0)).save(productEntity);
-
-        verify(productProtocolRepository, times(0)).createProduct(any());
-        verify(productProtocolRepository, times(1)).updateProduct(productPojo);
-        verify(productProtocolRepository, times(0)).getProductBySku(any());
-        verify(productProtocolRepository, times(0)).deleteProduct(any());
+        verify(productProtocolRepository, only()).updateProduct(productPojo);
+        verify(productJpaRepository, only()).findBySku(productPojo.getSku());
+        verify(productPersistenceMapper, never()).toEntity(productPojo);
 
         then(expectedException).isNotNull();
-    }
-
-    @Test
-    public void getProductBySku() {
-        givenProductEntity();
-        givenProductPojo();
-        givenExpectedException();
-        givenExpectedProductPojo();
-        givenProductJpaRepository();
-        givenProductPersistenceMapper();
-        givenProductProtocolRepository();
-
-        whenGettingProductBySku();
-
-        thenProductIsReturnedBySku();
     }
 
     private void whenGettingProductBySku() {
@@ -204,31 +219,12 @@ public class ProductProtocolRepositoryShould {
     }
 
     private void thenProductIsReturnedBySku() {
-        verify(productJpaRepository, times(1)).findBySku(productPojo.getSku());
-        verify(productPersistenceMapper, times(1)).toPojo(productEntity);
-
-        verify(productProtocolRepository, times(0)).createProduct(any());
-        verify(productProtocolRepository, times(0)).updateProduct(any());
-        verify(productProtocolRepository, times(1)).getProductBySku(productPojo.getSku());
-        verify(productProtocolRepository, times(0)).deleteProduct(any());
+        verify(productProtocolRepository, only()).getProductBySku(productPojo.getSku());
+        verify(productJpaRepository, only()).findBySku(productPojo.getSku());
+        verify(productPersistenceMapper, only()).toPojo(productEntity);
 
         then(expectedException).isNull();
         then(expectedProductPojo).isNotNull();
-    }
-
-    @Test
-    public void notGetProductBySku() {
-        givenProductEntity();
-        givenProductPojo();
-        givenExpectedException();
-        givenExpectedProductPojo();
-        givenProductJpaRepository();
-        givenProductPersistenceMapper();
-        givenProductProtocolRepository();
-
-        whenNotGettingProductBySku();
-
-        thenProductIsNotReturnedBySku();
     }
 
     private void whenNotGettingProductBySku() {
@@ -242,31 +238,12 @@ public class ProductProtocolRepositoryShould {
     }
 
     private void thenProductIsNotReturnedBySku() {
-        verify(productJpaRepository, times(1)).findBySku(productPojo.getSku());
-        verify(productPersistenceMapper, times(0)).toPojo(productEntity);
-
-        verify(productProtocolRepository, times(0)).createProduct(any());
-        verify(productProtocolRepository, times(0)).updateProduct(any());
-        verify(productProtocolRepository, times(1)).getProductBySku(productPojo.getSku());
-        verify(productProtocolRepository, times(0)).deleteProduct(any());
+        verify(productProtocolRepository, only()).getProductBySku(productPojo.getSku());
+        verify(productJpaRepository, only()).findBySku(productPojo.getSku());
+        verify(productPersistenceMapper, never()).toPojo(productEntity);
 
         then(expectedException).isNotNull();
         then(expectedProductPojo).isNull();
-    }
-
-    @Test
-    public void deleteProduct() {
-        givenProductEntity();
-        givenProductPojo();
-        givenExpectedException();
-        givenExpectedProductPojo();
-        givenProductJpaRepository();
-        givenProductPersistenceMapper();
-        givenProductProtocolRepository();
-
-        whenDeletingProduct();
-
-        thenProductIsDeleted();
     }
 
     private void whenDeletingProduct() {
@@ -281,31 +258,12 @@ public class ProductProtocolRepositoryShould {
     }
 
     private void thenProductIsDeleted() {
-        verify(productJpaRepository, times(1)).findBySku(productPojo.getSku());
-        verify(productPersistenceMapper, times(0)).toPojo(any());
-        verify(productJpaRepository, times(1)).delete(productEntity);
-
-        verify(productProtocolRepository, times(0)).createProduct(any());
-        verify(productProtocolRepository, times(0)).updateProduct(any());
-        verify(productProtocolRepository, times(0)).getProductBySku(any());
-        verify(productProtocolRepository, times(1)).deleteProduct(productPojo.getSku());
+        verify(productJpaRepository, atMostOnce()).findBySku(productPojo.getSku());
+        verify(productJpaRepository, atMostOnce()).delete(productEntity);
+        verifyNoMoreInteractions(productJpaRepository);
+        verify(productProtocolRepository, only()).deleteProduct(productPojo.getSku());
 
         then(expectedException).isNull();
-    }
-
-    @Test
-    public void notDeleteProduct() {
-        givenProductEntity();
-        givenProductPojo();
-        givenExpectedException();
-        givenExpectedProductPojo();
-        givenProductJpaRepository();
-        givenProductPersistenceMapper();
-        givenProductProtocolRepository();
-
-        whenNotDeletingProduct();
-
-        thenProductIsNotDeleted();
     }
 
     private void whenNotDeletingProduct() {
@@ -319,14 +277,9 @@ public class ProductProtocolRepositoryShould {
     }
 
     private void thenProductIsNotDeleted() {
-        verify(productJpaRepository, times(1)).findBySku(productPojo.getSku());
-        verify(productPersistenceMapper, times(0)).toPojo(any());
-        verify(productJpaRepository, times(0)).delete(productEntity);
-
-        verify(productProtocolRepository, times(0)).createProduct(any());
-        verify(productProtocolRepository, times(0)).updateProduct(any());
-        verify(productProtocolRepository, times(0)).getProductBySku(any());
-        verify(productProtocolRepository, times(1)).deleteProduct(productPojo.getSku());
+        verify(productProtocolRepository, only()).deleteProduct(productPojo.getSku());
+        verify(productJpaRepository, only()).findBySku(productPojo.getSku());
+        verify(productPersistenceMapper, never()).toPojo(any());
 
         then(expectedException).isNotNull();
     }

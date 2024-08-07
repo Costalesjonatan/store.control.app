@@ -5,12 +5,11 @@ import com.stock.control.app.persistence.entity.ProductEntity;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.BDDAssertions.then;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class ProductPersistenceMapperShould {
+public class ProductPersistenceMapperShouldTest {
     private ProductPersistenceMapper productPersistenceMapper;
     private ProductEntity productEntity;
     private ProductPojo productPojo;
@@ -20,18 +19,14 @@ public class ProductPersistenceMapperShould {
     public void mapToPojo() {
         givenProductEntity();
         givenProductPersistenceMapper();
-
         whenProductEntityIsMapping();
-
         thenProductEntityIsMapped();
     }
     @Test
     public void mapToDto() {
         givenProductPojo();
         givenProductPersistenceMapper();
-
         whenProductPojoIsMapping();
-
         thenProductPojoIsMapped();
     }
     private void givenProductEntity() {
@@ -71,8 +66,7 @@ public class ProductPersistenceMapperShould {
         }
     }
     private void thenProductEntityIsMapped() {
-        verify(productPersistenceMapper, times(1)).toPojo(productEntity);
-        verify(productPersistenceMapper, times(0)).toEntity(any());
+        verify(productPersistenceMapper, only()).toPojo(productEntity);
         then(expectedException).isNull();
         then(productPojo.getSku()).isEqualTo(productEntity.getSku());
         then(productPojo.getName()).isEqualTo(productEntity.getName());
@@ -81,8 +75,7 @@ public class ProductPersistenceMapperShould {
         then(productPojo.getId()).isEqualTo(productEntity.getId());
     }
     private void thenProductPojoIsMapped() {
-        verify(productPersistenceMapper, times(1)).toEntity(productPojo);
-        verify(productPersistenceMapper, times(0)).toPojo(any());
+        verify(productPersistenceMapper, only()).toEntity(productPojo);
         then(expectedException).isNull();
         then(productEntity.getSku()).isEqualTo(productPojo.getSku());
         then(productEntity.getName()).isEqualTo(productPojo.getName());
