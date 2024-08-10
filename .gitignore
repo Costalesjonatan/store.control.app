@@ -62,4 +62,5 @@ out/
 .vscode/
 
 secrets.properties
+secrets-test.properties
 data.sql
