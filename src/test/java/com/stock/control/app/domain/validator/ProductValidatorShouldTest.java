@@ -1,6 +1,6 @@
 package com.stock.control.app.domain.validator;
 
-import com.stock.control.app.rest.dto.ProductDto;
+import com.stock.control.app.rest.dto.ProductRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.BDDAssertions.then;
@@ -14,8 +14,8 @@ import static org.mockito.Mockito.verify;
 public class ProductValidatorShouldTest {
     private ProductValidator productValidator;
     private Exception expectedException;
-    private ProductDto validProductDto;
-    private ProductDto invalidProductDto;
+    private ProductRequest validProductRequest;
+    private ProductRequest invalidProductRequest;
 
     @Test
     public void validateSku() {
@@ -49,7 +49,7 @@ public class ProductValidatorShouldTest {
     public void validateProductDtoForUpdate() {
         givenProductValidator();
         givenValidProductDto();
-        whenValidatingProductDto(validProductDto);
+        whenValidatingProductDto(validProductRequest);
         thenValidProductDtoIsValidated();
     }
 
@@ -57,8 +57,8 @@ public class ProductValidatorShouldTest {
     public void rejectProductDtoForUpdateCaseOne() {
         givenProductValidator();
         givenInvalidProductDto();
-        invalidProductDto.setSku(null);
-        whenValidatingProductDto(invalidProductDto);
+        invalidProductRequest.setSku(null);
+        whenValidatingProductDto(invalidProductRequest);
         thenInvalidProductDtoIsRejected();
     }
 
@@ -66,8 +66,8 @@ public class ProductValidatorShouldTest {
     public void rejectProductDtoForUpdateCaseTwo() {
         givenProductValidator();
         givenInvalidProductDto();
-        invalidProductDto.setPrice(null);
-        whenValidatingProductDto(invalidProductDto);
+        invalidProductRequest.setPrice(null);
+        whenValidatingProductDto(invalidProductRequest);
         thenInvalidProductDtoIsRejected();
     }
 
@@ -75,8 +75,8 @@ public class ProductValidatorShouldTest {
     public void rejectProductDtoForUpdateCaseThree() {
         givenProductValidator();
         givenInvalidProductDto();
-        invalidProductDto.setName(null);
-        whenValidatingProductDto(invalidProductDto);
+        invalidProductRequest.setName(null);
+        whenValidatingProductDto(invalidProductRequest);
         thenInvalidProductDtoIsRejected();
     }
 
@@ -84,8 +84,8 @@ public class ProductValidatorShouldTest {
     public void rejectProductDtoForUpdateCaseFour() {
         givenProductValidator();
         givenInvalidProductDto();
-        invalidProductDto.setCost(null);
-        whenValidatingProductDto(invalidProductDto);
+        invalidProductRequest.setCost(null);
+        whenValidatingProductDto(invalidProductRequest);
         thenInvalidProductDtoIsRejected();
     }
 
@@ -93,9 +93,9 @@ public class ProductValidatorShouldTest {
     public void rejectProductDtoForUpdateCaseFive() {
         givenProductValidator();
         givenInvalidProductDto();
-        invalidProductDto.setCost(10);
-        invalidProductDto.setCost(9);
-        whenValidatingProductDto(invalidProductDto);
+        invalidProductRequest.setCost(10);
+        invalidProductRequest.setCost(9);
+        whenValidatingProductDto(invalidProductRequest);
         thenInvalidProductDtoIsRejected();
     }
 
@@ -103,7 +103,7 @@ public class ProductValidatorShouldTest {
     public void validateProductDtoForCreate() {
         givenProductValidator();
         givenValidProductDto();
-        whenValidatingProductDtoForCreate(validProductDto);
+        whenValidatingProductDtoForCreate(validProductRequest);
         thenValidProductDtoIsValidatedForCreate();
     }
 
@@ -111,8 +111,8 @@ public class ProductValidatorShouldTest {
     public void rejectProductDtoForUpdateCaseOneForCreate() {
         givenProductValidator();
         givenInvalidProductDto();
-        invalidProductDto.setSku(null);
-        whenValidatingProductDtoForCreate(invalidProductDto);
+        invalidProductRequest.setSku(null);
+        whenValidatingProductDtoForCreate(invalidProductRequest);
         thenInvalidProductDtoIsRejectedForCreate();
     }
 
@@ -120,8 +120,8 @@ public class ProductValidatorShouldTest {
     public void rejectProductDtoForUpdateCaseTwoForCreate() {
         givenProductValidator();
         givenInvalidProductDto();
-        invalidProductDto.setPrice(null);
-        whenValidatingProductDtoForCreate(invalidProductDto);
+        invalidProductRequest.setPrice(null);
+        whenValidatingProductDtoForCreate(invalidProductRequest);
         thenInvalidProductDtoIsRejectedForCreate();
     }
 
@@ -129,8 +129,8 @@ public class ProductValidatorShouldTest {
     public void rejectProductDtoForUpdateCaseThreeForCreate() {
         givenProductValidator();
         givenInvalidProductDto();
-        invalidProductDto.setName(null);
-        whenValidatingProductDtoForCreate(invalidProductDto);
+        invalidProductRequest.setName(null);
+        whenValidatingProductDtoForCreate(invalidProductRequest);
         thenInvalidProductDtoIsRejectedForCreate();
     }
 
@@ -138,8 +138,8 @@ public class ProductValidatorShouldTest {
     public void rejectProductDtoForUpdateCaseFourForCreate() {
         givenProductValidator();
         givenInvalidProductDto();
-        invalidProductDto.setCost(null);
-        whenValidatingProductDtoForCreate(invalidProductDto);
+        invalidProductRequest.setCost(null);
+        whenValidatingProductDtoForCreate(invalidProductRequest);
         thenInvalidProductDtoIsRejectedForCreate();
     }
 
@@ -147,15 +147,15 @@ public class ProductValidatorShouldTest {
     public void rejectProductDtoForUpdateCaseFiveForCreate() {
         givenProductValidator();
         givenInvalidProductDto();
-        invalidProductDto.setCost(10);
-        invalidProductDto.setCost(9);
-        whenValidatingProductDtoForCreate(invalidProductDto);
+        invalidProductRequest.setCost(10);
+        invalidProductRequest.setCost(9);
+        whenValidatingProductDtoForCreate(invalidProductRequest);
         thenInvalidProductDtoIsRejectedForCreate();
     }
 
-    private void whenValidatingProductDtoForCreate(ProductDto productDto) {
+    private void whenValidatingProductDtoForCreate(ProductRequest productRequest) {
         try {
-            productValidator.validateCreate(productDto);
+            productValidator.validateCreate(productRequest);
         } catch (Exception exception) {
             expectedException = exception;
             exception.printStackTrace();
@@ -163,16 +163,16 @@ public class ProductValidatorShouldTest {
     }
 
     private void thenValidProductDtoIsValidatedForCreate() {
-        verify(productValidator, times(1)).validateSku(validProductDto.getSku());
+        verify(productValidator, times(1)).validateSku(validProductRequest.getSku());
         verify(productValidator, times(0)).validateUpdate(any());
-        verify(productValidator, times(1)).validateCreate(validProductDto);
+        verify(productValidator, times(1)).validateCreate(validProductRequest);
         then(expectedException).isNull();
     }
 
     private void thenInvalidProductDtoIsRejectedForCreate() {
-        verify(productValidator, times(1)).validateSku(invalidProductDto.getSku());
+        verify(productValidator, times(1)).validateSku(invalidProductRequest.getSku());
         verify(productValidator, times(0)).validateUpdate(any());
-        verify(productValidator, times(1)).validateCreate(invalidProductDto);
+        verify(productValidator, times(1)).validateCreate(invalidProductRequest);
         then(expectedException).isNotNull();
     }
 
@@ -181,7 +181,7 @@ public class ProductValidatorShouldTest {
     }
 
     private void givenValidProductDto() {
-        validProductDto = ProductDto.builder()
+        validProductRequest = ProductRequest.builder()
                 .name("NAME")
                 .sku("SKU")
                 .cost(1)
@@ -190,7 +190,7 @@ public class ProductValidatorShouldTest {
     }
 
     private void givenInvalidProductDto() {
-        invalidProductDto = ProductDto.builder()
+        invalidProductRequest = ProductRequest.builder()
                 .name("NAME")
                 .sku("SKU")
                 .cost(1)
@@ -207,9 +207,9 @@ public class ProductValidatorShouldTest {
         }
     }
 
-    private void whenValidatingProductDto(ProductDto productDto) {
+    private void whenValidatingProductDto(ProductRequest productRequest) {
         try {
-            productValidator.validateUpdate(productDto);
+            productValidator.validateUpdate(productRequest);
         } catch (Exception exception) {
             expectedException = exception;
             exception.printStackTrace();
@@ -232,14 +232,14 @@ public class ProductValidatorShouldTest {
     }
 
     private void thenInvalidProductDtoIsRejected() {
-        verify(productValidator, times(1)).validateSku(invalidProductDto.getSku());
-        verify(productValidator, times(1)).validateUpdate(invalidProductDto);
+        verify(productValidator, times(1)).validateSku(invalidProductRequest.getSku());
+        verify(productValidator, times(1)).validateUpdate(invalidProductRequest);
         then(expectedException).isNotNull();
     }
 
     private void thenValidProductDtoIsValidated() {
-        verify(productValidator, times(1)).validateSku(validProductDto.getSku());
-        verify(productValidator, times(1)).validateUpdate(validProductDto);
+        verify(productValidator, times(1)).validateSku(validProductRequest.getSku());
+        verify(productValidator, times(1)).validateUpdate(validProductRequest);
         then(expectedException).isNull();
     }
 }

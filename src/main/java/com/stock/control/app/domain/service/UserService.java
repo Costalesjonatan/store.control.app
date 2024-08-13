@@ -5,7 +5,7 @@ import com.stock.control.app.domain.pojo.UserPojo;
 import com.stock.control.app.domain.protocol.AuthorityProtocolRepository;
 import com.stock.control.app.domain.protocol.UserProtocolRepository;
 import com.stock.control.app.domain.validator.UserValidator;
-import com.stock.control.app.rest.dto.UserDto;
+import com.stock.control.app.rest.dto.UserRequest;
 import com.stock.control.app.utils.AuthorityName;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +23,7 @@ public class UserService {
     private final UserMapper userDomainMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public void createUser(UserDto user) {
+    public void createUser(UserRequest user) {
         userValidator.validateUsername(user.getUsername());
         userValidator.validatePassword(user.getPassword());
         UserPojo mappedUser = userDomainMapper.toPojo(user);

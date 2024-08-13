@@ -1,21 +1,21 @@
 package com.stock.control.app.domain.mapper;
 
 import com.stock.control.app.domain.pojo.ProductPojo;
-import com.stock.control.app.rest.dto.ProductDto;
+import com.stock.control.app.rest.dto.ProductRequest;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProductMapper {
-    public ProductPojo toPojo(ProductDto productDto) {
+    public ProductPojo toPojo(ProductRequest productRequest) {
         return ProductPojo.builder()
-                .sku(productDto.getSku())
-                .name(productDto.getName())
-                .cost(productDto.getCost())
-                .price(productDto.getPrice())
+                .sku(productRequest.getSku())
+                .name(productRequest.getName())
+                .cost(productRequest.getCost())
+                .price(productRequest.getPrice())
                 .build();
     }
-    public ProductDto toDto(ProductPojo productPojo) {
-        return ProductDto.builder()
+    public ProductRequest toDto(ProductPojo productPojo) {
+        return ProductRequest.builder()
                 .sku(productPojo.getSku())
                 .name(productPojo.getName())
                 .cost(productPojo.getCost())

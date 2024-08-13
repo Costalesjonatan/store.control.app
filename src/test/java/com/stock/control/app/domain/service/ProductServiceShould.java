@@ -4,7 +4,7 @@ import com.stock.control.app.domain.mapper.ProductMapper;
 import com.stock.control.app.domain.pojo.ProductPojo;
 import com.stock.control.app.domain.protocol.ProductRepositoryProtocol;
 import com.stock.control.app.domain.validator.ProductValidator;
-import com.stock.control.app.rest.dto.ProductDto;
+import com.stock.control.app.rest.dto.ProductRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.BDDAssertions.then;
@@ -25,7 +25,7 @@ public class ProductServiceShould {
     private ProductValidator productValidator;
     private ProductService productService;
     private Exception expectedException;
-    private ProductDto productDto;
+    private ProductRequest productRequest;
     private ProductPojo productPojo;
 
     @Test
@@ -126,8 +126,8 @@ public class ProductServiceShould {
     }
 
     private void whenDeletingProductBySku() {
-        doNothing().when(productValidator).validateSku(productDto.getSku());
-        doNothing().when(productRepositoryProtocol).deleteProduct(productDto.getSku());
+        doNothing().when(productValidator).validateSku(productRequest.getSku());
+        doNothing().when(productRepositoryProtocol).deleteProduct(productRequest.getSku());
         try {
             productService.deleteProductBySku("SKU");
         } catch (Exception exception) {
@@ -137,12 +137,12 @@ public class ProductServiceShould {
     }
 
     private void thenProductBySkuIsDeleted() {
-        verify(productValidator, times(1)).validateSku(productDto.getSku());
-        verify(productRepositoryProtocol, times(1)).deleteProduct(productDto.getSku());
+        verify(productValidator, times(1)).validateSku(productRequest.getSku());
+        verify(productRepositoryProtocol, times(1)).deleteProduct(productRequest.getSku());
 
         verify(productService, times(0)).createProduct(any());
         verify(productService, times(0)).updateProduct(any());
-        verify(productService, times(1)).deleteProductBySku(productDto.getSku());
+        verify(productService, times(1)).deleteProductBySku(productRequest.getSku());
         verify(productService, times(0)).getProductBySku(any());
 
         then(expectedException).isNull();
@@ -164,8 +164,8 @@ public class ProductServiceShould {
     }
 
     private void whenNotDeletingProductBySku() {
-        doNothing().when(productValidator).validateSku(productDto.getSku());
-        doThrow(IllegalArgumentException.class).when(productRepositoryProtocol).deleteProduct(productDto.getSku());
+        doNothing().when(productValidator).validateSku(productRequest.getSku());
+        doThrow(IllegalArgumentException.class).when(productRepositoryProtocol).deleteProduct(productRequest.getSku());
         try {
             productService.deleteProductBySku("SKU");
         } catch (Exception exception) {
@@ -175,23 +175,23 @@ public class ProductServiceShould {
     }
 
     private void thenProductBySkuIsNotDeleted() {
-        verify(productValidator, times(1)).validateSku(productDto.getSku());
-        verify(productRepositoryProtocol, times(1)).deleteProduct(productDto.getSku());
+        verify(productValidator, times(1)).validateSku(productRequest.getSku());
+        verify(productRepositoryProtocol, times(1)).deleteProduct(productRequest.getSku());
 
         verify(productService, times(0)).createProduct(any());
         verify(productService, times(0)).updateProduct(any());
-        verify(productService, times(1)).deleteProductBySku(productDto.getSku());
+        verify(productService, times(1)).deleteProductBySku(productRequest.getSku());
         verify(productService, times(0)).getProductBySku(any());
 
         then(expectedException).isNotNull();
     }
 
     private void whenGettingProductBySku() {
-        doNothing().when(productValidator).validateSku(productDto.getSku());
-        when(productRepositoryProtocol.getProductBySku(productDto.getSku())).thenReturn(productPojo);
+        doNothing().when(productValidator).validateSku(productRequest.getSku());
+        when(productRepositoryProtocol.getProductBySku(productRequest.getSku())).thenReturn(productPojo);
         doCallRealMethod().when(productMapper).toDto(productPojo);
         try {
-            productDto = productService.getProductBySku("SKU");
+            productRequest = productService.getProductBySku("SKU");
         } catch (Exception exception) {
             expectedException = exception;
             exception.printStackTrace();
@@ -199,23 +199,23 @@ public class ProductServiceShould {
     }
 
     private void thenProductBySkuIsReturned() {
-        verify(productValidator, times(1)).validateSku(productDto.getSku());
-        verify(productRepositoryProtocol, times(1)).getProductBySku(productDto.getSku());
+        verify(productValidator, times(1)).validateSku(productRequest.getSku());
+        verify(productRepositoryProtocol, times(1)).getProductBySku(productRequest.getSku());
         verify(productMapper, times(1)).toDto(productPojo);
 
         verify(productService, times(0)).createProduct(any());
         verify(productService, times(0)).updateProduct(any());
         verify(productService, times(0)).deleteProductBySku(any());
-        verify(productService, times(1)).getProductBySku(productDto.getSku());
+        verify(productService, times(1)).getProductBySku(productRequest.getSku());
 
         then(expectedException).isNull();
     }
 
     private void whenNotGettingProductBySku() {
-        doNothing().when(productValidator).validateSku(productDto.getSku());
-        doThrow(IllegalArgumentException.class).when(productRepositoryProtocol).getProductBySku(productDto.getSku());
+        doNothing().when(productValidator).validateSku(productRequest.getSku());
+        doThrow(IllegalArgumentException.class).when(productRepositoryProtocol).getProductBySku(productRequest.getSku());
         try {
-            productDto = productService.getProductBySku("SKU");
+            productRequest = productService.getProductBySku("SKU");
         } catch (Exception exception) {
             expectedException = exception;
             exception.printStackTrace();
@@ -223,22 +223,22 @@ public class ProductServiceShould {
     }
 
     private void thenProductBySkuIsNotReturned() {
-        verify(productValidator, times(1)).validateSku(productDto.getSku());
-        verify(productRepositoryProtocol, times(1)).getProductBySku(productDto.getSku());
+        verify(productValidator, times(1)).validateSku(productRequest.getSku());
+        verify(productRepositoryProtocol, times(1)).getProductBySku(productRequest.getSku());
         verify(productMapper, times(0)).toDto(any());
 
         verify(productService, times(0)).createProduct(any());
         verify(productService, times(0)).updateProduct(any());
         verify(productService, times(0)).deleteProductBySku(any());
-        verify(productService, times(1)).getProductBySku(productDto.getSku());
+        verify(productService, times(1)).getProductBySku(productRequest.getSku());
 
         then(expectedException).isNotNull();
     }
 
     private void whenNotUpdatingProduct() {
-        doThrow(IllegalArgumentException.class).when(productValidator).validateUpdate(productDto);
+        doThrow(IllegalArgumentException.class).when(productValidator).validateUpdate(productRequest);
         try {
-            productService.updateProduct(productDto);
+            productService.updateProduct(productRequest);
         } catch (Exception exception) {
             expectedException = exception;
             exception.printStackTrace();
@@ -246,12 +246,12 @@ public class ProductServiceShould {
     }
 
     private void thenProductIsNotUpdated() {
-        verify(productValidator, times(1)).validateUpdate(productDto);
+        verify(productValidator, times(1)).validateUpdate(productRequest);
         verify(productMapper, times(0)).toPojo(any());
         verify(productRepositoryProtocol, times(0)).updateProduct(any());
 
         verify(productService, times(0)).createProduct(any());
-        verify(productService, times(1)).updateProduct(productDto);
+        verify(productService, times(1)).updateProduct(productRequest);
         verify(productService, times(0)).deleteProductBySku(any());
         verify(productService, times(0)).getProductBySku(any());
 
@@ -259,11 +259,11 @@ public class ProductServiceShould {
     }
 
     private void whenUpdatingProduct() {
-        doNothing().when(productValidator).validateUpdate(productDto);
-        doCallRealMethod().when(productMapper).toPojo(productDto);
+        doNothing().when(productValidator).validateUpdate(productRequest);
+        doCallRealMethod().when(productMapper).toPojo(productRequest);
         doNothing().when(productRepositoryProtocol).updateProduct(any(ProductPojo.class));
         try {
-            productService.updateProduct(productDto);
+            productService.updateProduct(productRequest);
         } catch (Exception exception) {
             expectedException = exception;
             exception.printStackTrace();
@@ -271,18 +271,18 @@ public class ProductServiceShould {
     }
 
     private void thenProductIsUpdated() {
-        verify(productService, only()).updateProduct(productDto);
-        verify(productValidator, times(1)).validateUpdate(productDto);
-        verify(productMapper, times(1)).toPojo(productDto);
+        verify(productService, only()).updateProduct(productRequest);
+        verify(productValidator, times(1)).validateUpdate(productRequest);
+        verify(productMapper, times(1)).toPojo(productRequest);
         verify(productRepositoryProtocol, times(1)).updateProduct(any(ProductPojo.class));
 
         then(expectedException).isNull();
     }
 
     private void whenNotCreatingProduct() {
-        doThrow(IllegalArgumentException.class).when(productValidator).validateCreate(productDto);
+        doThrow(IllegalArgumentException.class).when(productValidator).validateCreate(productRequest);
         try {
-            productService.createProduct(productDto);
+            productService.createProduct(productRequest);
         } catch (Exception exception) {
             expectedException = exception;
             exception.printStackTrace();
@@ -290,8 +290,8 @@ public class ProductServiceShould {
     }
 
     private void thenProductIsNotCreated() {
-        verify(productValidator, only()).validateCreate(productDto);
-        verify(productService, times(1)).createProduct(productDto);
+        verify(productValidator, only()).validateCreate(productRequest);
+        verify(productService, times(1)).createProduct(productRequest);
         verify(productService, times(0)).updateProduct(any());
         verify(productService, times(0)).deleteProductBySku(any());
         verify(productService, times(0)).getProductBySku(any());
@@ -300,11 +300,11 @@ public class ProductServiceShould {
     }
 
     private void whenCreatingProduct() {
-        doNothing().when(productValidator).validateCreate(productDto);
-        doCallRealMethod().when(productMapper).toPojo(productDto);
+        doNothing().when(productValidator).validateCreate(productRequest);
+        doCallRealMethod().when(productMapper).toPojo(productRequest);
         doNothing().when(productRepositoryProtocol).createProduct(any(ProductPojo.class));
         try {
-            productService.createProduct(productDto);
+            productService.createProduct(productRequest);
         } catch (Exception exception) {
             expectedException = exception;
             exception.printStackTrace();
@@ -312,9 +312,9 @@ public class ProductServiceShould {
     }
 
     private void thenProductIsCreated() {
-        verify(productService, only()).createProduct(productDto);
-        verify(productValidator, times(1)).validateCreate(productDto);
-        verify(productMapper, times(1)).toPojo(productDto);
+        verify(productService, only()).createProduct(productRequest);
+        verify(productValidator, times(1)).validateCreate(productRequest);
+        verify(productMapper, times(1)).toPojo(productRequest);
         verify(productRepositoryProtocol, times(1)).createProduct(any(ProductPojo.class));
 
         then(expectedException).isNull();
@@ -341,7 +341,7 @@ public class ProductServiceShould {
     }
 
     private void givenProductDto() {
-        productDto = ProductDto.builder()
+        productRequest = ProductRequest.builder()
                 .sku("SKU")
                 .name("NAME")
                 .price(1)

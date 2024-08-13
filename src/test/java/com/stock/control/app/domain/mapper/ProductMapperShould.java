@@ -1,7 +1,7 @@
 package com.stock.control.app.domain.mapper;
 
 import com.stock.control.app.domain.pojo.ProductPojo;
-import com.stock.control.app.rest.dto.ProductDto;
+import com.stock.control.app.rest.dto.ProductRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.BDDAssertions.then;
@@ -13,7 +13,7 @@ import static org.mockito.Mockito.verify;
 public class ProductMapperShould {
 
     private ProductMapper productMapper;
-    private ProductDto productDto;
+    private ProductRequest productRequest;
     private ProductPojo productPojo;
     private Exception expectedException;
 
@@ -36,7 +36,7 @@ public class ProductMapperShould {
         thenProductPojoIsMapped();
     }
     private void givenProductDto() {
-        productDto = ProductDto.builder()
+        productRequest = ProductRequest.builder()
                 .sku("SKU")
                 .name("NAME")
                 .price(1)
@@ -56,7 +56,7 @@ public class ProductMapperShould {
     }
     private void whenProductDtoIsMapping() {
         try {
-            productPojo = productMapper.toPojo(productDto);
+            productPojo = productMapper.toPojo(productRequest);
         } catch (Exception exception) {
             expectedException = exception;
             exception.printStackTrace();
@@ -64,27 +64,27 @@ public class ProductMapperShould {
     }
     private void whenProductPojoIsMapping() {
         try {
-            productDto = productMapper.toDto(productPojo);
+            productRequest = productMapper.toDto(productPojo);
         } catch (Exception exception) {
             expectedException = exception;
             exception.printStackTrace();
         }
     }
     private void thenProductDtoIsMapped() {
-        verify(productMapper, only()).toPojo(productDto);
+        verify(productMapper, only()).toPojo(productRequest);
         then(expectedException).isNull();
-        then(productPojo.getSku()).isEqualTo(productDto.getSku());
-        then(productPojo.getName()).isEqualTo(productDto.getName());
-        then(productPojo.getPrice()).isEqualTo(productDto.getPrice());
-        then(productPojo.getCost()).isEqualTo(productDto.getCost());
+        then(productPojo.getSku()).isEqualTo(productRequest.getSku());
+        then(productPojo.getName()).isEqualTo(productRequest.getName());
+        then(productPojo.getPrice()).isEqualTo(productRequest.getPrice());
+        then(productPojo.getCost()).isEqualTo(productRequest.getCost());
         then(productPojo.getId()).isNull();
     }
     private void thenProductPojoIsMapped() {
         verify(productMapper, only()).toDto(productPojo);
         then(expectedException).isNull();
-        then(productDto.getSku()).isEqualTo(productPojo.getSku());
-        then(productDto.getName()).isEqualTo(productPojo.getName());
-        then(productDto.getPrice()).isEqualTo(productPojo.getPrice());
-        then(productDto.getCost()).isEqualTo(productPojo.getCost());
+        then(productRequest.getSku()).isEqualTo(productPojo.getSku());
+        then(productRequest.getName()).isEqualTo(productPojo.getName());
+        then(productRequest.getPrice()).isEqualTo(productPojo.getPrice());
+        then(productRequest.getCost()).isEqualTo(productPojo.getCost());
     }
 }

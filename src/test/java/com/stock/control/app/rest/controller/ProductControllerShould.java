@@ -1,7 +1,7 @@
 package com.stock.control.app.rest.controller;
 
 import com.stock.control.app.domain.service.ProductService;
-import com.stock.control.app.rest.dto.ProductDto;
+import com.stock.control.app.rest.dto.ProductRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +19,13 @@ import static org.mockito.Mockito.when;
 public class ProductControllerShould {
     private ProductService productService;
     private ProductController productController;
-    private ProductDto productDto;
+    private ProductRequest productRequest;
     private ResponseEntity<String> responseEntityCreated;
     private ResponseEntity<String> responseEntityOk;
     private ResponseEntity<String> responseEntityBadRequest;
-    private ResponseEntity<ProductDto> responseEntityWhitObject;
+    private ResponseEntity<ProductRequest> responseEntityWhitObject;
     private ResponseEntity<String> responseObtained;
-    private ResponseEntity<ProductDto> responseObtainedWhitObject;
+    private ResponseEntity<ProductRequest> responseObtainedWhitObject;
 
     @Test
     public void createProduct() {
@@ -64,18 +64,18 @@ public class ProductControllerShould {
     }
 
     private void whenUpdatingProduct() {
-        doNothing().when(productService).updateProduct(productDto);
-        responseObtained = productController.updateProduct(productDto);
+        doNothing().when(productService).updateProduct(productRequest);
+        responseObtained = productController.updateProduct(productRequest);
     }
 
     private void thenProductIsUpdated() {
         verify(productService, times(0)).createProduct(any());
-        verify(productService, times(1)).updateProduct(productDto);
+        verify(productService, times(1)).updateProduct(productRequest);
         verify(productService, times(0)).getProductBySku(any());
         verify(productService, times(0)).deleteProductBySku(any());
 
         verify(productController, times(0)).createProduct(any());
-        verify(productController, times(1)).updateProduct(productDto);
+        verify(productController, times(1)).updateProduct(productRequest);
         verify(productController, times(0)).getProduct(any());
         verify(productController, times(0)).deleteProduct(any());
 
@@ -119,19 +119,19 @@ public class ProductControllerShould {
     }
 
     private void whenNotGettingProduct() {
-        doThrow(new RuntimeException()).when(productService).getProductBySku(productDto.getSku());
-        responseObtainedWhitObject = productController.getProduct(productDto.getSku());
+        doThrow(new RuntimeException()).when(productService).getProductBySku(productRequest.getSku());
+        responseObtainedWhitObject = productController.getProduct(productRequest.getSku());
     }
 
     private void thenProductIsNotReturned() {
         verify(productService, times(0)).createProduct(any());
         verify(productService, times(0)).updateProduct(any());
-        verify(productService, times(1)).getProductBySku(productDto.getSku());
+        verify(productService, times(1)).getProductBySku(productRequest.getSku());
         verify(productService, times(0)).deleteProductBySku(any());
 
         verify(productController, times(0)).createProduct(any());
         verify(productController, times(0)).updateProduct(any());
-        verify(productController, times(1)).getProduct(productDto.getSku());
+        verify(productController, times(1)).getProduct(productRequest.getSku());
         verify(productController, times(0)).deleteProduct(any());
 
         then(responseObtainedWhitObject).isEqualTo(responseEntityBadRequest);
@@ -150,20 +150,20 @@ public class ProductControllerShould {
     }
 
     private void whenDeletedProduct() {
-        doNothing().when(productService).deleteProductBySku(productDto.getSku());
-        responseObtained = productController.deleteProduct(productDto.getSku());
+        doNothing().when(productService).deleteProductBySku(productRequest.getSku());
+        responseObtained = productController.deleteProduct(productRequest.getSku());
     }
 
     private void thenProductIsDeleted() {
         verify(productService, times(0)).createProduct(any());
         verify(productService, times(0)).updateProduct(any());
         verify(productService, times(0)).getProductBySku(any());
-        verify(productService, times(1)).deleteProductBySku(productDto.getSku());
+        verify(productService, times(1)).deleteProductBySku(productRequest.getSku());
 
         verify(productController, times(0)).createProduct(any());
         verify(productController, times(0)).updateProduct(any());
-        verify(productController, times(0)).getProduct(productDto.getSku());
-        verify(productController, times(1)).deleteProduct(productDto.getSku());
+        verify(productController, times(0)).getProduct(productRequest.getSku());
+        verify(productController, times(1)).deleteProduct(productRequest.getSku());
 
         then(responseObtained).isEqualTo(responseEntityOk);
     }
@@ -181,56 +181,56 @@ public class ProductControllerShould {
     }
 
     private void whenNotDeletedProduct() {
-        doThrow(new RuntimeException()).when(productService).deleteProductBySku(productDto.getSku());
-        responseObtained = productController.deleteProduct(productDto.getSku());
+        doThrow(new RuntimeException()).when(productService).deleteProductBySku(productRequest.getSku());
+        responseObtained = productController.deleteProduct(productRequest.getSku());
     }
 
     private void thenProductIsNotDeleted() {
         verify(productService, times(0)).createProduct(any());
         verify(productService, times(0)).updateProduct(any());
         verify(productService, times(0)).getProductBySku(any());
-        verify(productService, times(1)).deleteProductBySku(productDto.getSku());
+        verify(productService, times(1)).deleteProductBySku(productRequest.getSku());
 
         verify(productController, times(0)).createProduct(any());
         verify(productController, times(0)).updateProduct(any());
-        verify(productController, times(0)).getProduct(productDto.getSku());
-        verify(productController, times(1)).deleteProduct(productDto.getSku());
+        verify(productController, times(0)).getProduct(productRequest.getSku());
+        verify(productController, times(1)).deleteProduct(productRequest.getSku());
 
         then(responseObtained).isEqualTo(responseEntityBadRequest);
     }
 
     private void whenGettingProduct() {
-        when(productService.getProductBySku(productDto.getSku())).thenReturn(productDto);
-        responseObtainedWhitObject = productController.getProduct(productDto.getSku());
+        when(productService.getProductBySku(productRequest.getSku())).thenReturn(productRequest);
+        responseObtainedWhitObject = productController.getProduct(productRequest.getSku());
     }
 
     private void thenProductIsReturned() {
         verify(productService, times(0)).createProduct(any());
         verify(productService, times(0)).updateProduct(any());
-        verify(productService, times(1)).getProductBySku(productDto.getSku());
+        verify(productService, times(1)).getProductBySku(productRequest.getSku());
         verify(productService, times(0)).deleteProductBySku(any());
 
         verify(productController, times(0)).createProduct(any());
         verify(productController, times(0)).updateProduct(any());
-        verify(productController, times(1)).getProduct(productDto.getSku());
+        verify(productController, times(1)).getProduct(productRequest.getSku());
         verify(productController, times(0)).deleteProduct(any());
 
         then(responseObtainedWhitObject).isEqualTo(responseEntityWhitObject);
     }
 
     private void whenNotUpdatingProduct() {
-        doThrow(new RuntimeException()).when(productService).updateProduct(productDto);
-        responseObtained = productController.updateProduct(productDto);
+        doThrow(new RuntimeException()).when(productService).updateProduct(productRequest);
+        responseObtained = productController.updateProduct(productRequest);
     }
 
     private void thenProductIsNotUpdated() {
         verify(productService, times(0)).createProduct(any());
-        verify(productService, times(1)).updateProduct(productDto);
+        verify(productService, times(1)).updateProduct(productRequest);
         verify(productService, times(0)).getProductBySku(any());
         verify(productService, times(0)).deleteProductBySku(any());
 
         verify(productController, times(0)).createProduct(any());
-        verify(productController, times(1)).updateProduct(productDto);
+        verify(productController, times(1)).updateProduct(productRequest);
         verify(productController, times(0)).getProduct(any());
         verify(productController, times(0)).deleteProduct(any());
 
@@ -238,17 +238,17 @@ public class ProductControllerShould {
     }
 
     private void whenNotCreatingProduct() {
-        doThrow(new RuntimeException()).when(productService).createProduct(productDto);
-        responseObtained = productController.createProduct(productDto);
+        doThrow(new RuntimeException()).when(productService).createProduct(productRequest);
+        responseObtained = productController.createProduct(productRequest);
     }
 
     private void thenProductIsNotCreated() {
-        verify(productService, times(1)).createProduct(productDto);
+        verify(productService, times(1)).createProduct(productRequest);
         verify(productService, times(0)).updateProduct(any());
         verify(productService, times(0)).getProductBySku(any());
         verify(productService, times(0)).deleteProductBySku(any());
 
-        verify(productController, times(1)).createProduct(productDto);
+        verify(productController, times(1)).createProduct(productRequest);
         verify(productController, times(0)).updateProduct(any());
         verify(productController, times(0)).getProduct(any());
         verify(productController, times(0)).deleteProduct(any());
@@ -257,17 +257,17 @@ public class ProductControllerShould {
     }
 
     private void whenCreatingProduct() {
-        doNothing().when(productService).createProduct(productDto);
-        responseObtained = productController.createProduct(productDto);
+        doNothing().when(productService).createProduct(productRequest);
+        responseObtained = productController.createProduct(productRequest);
     }
 
     private void thenProductIsCreated() {
-        verify(productService, times(1)).createProduct(productDto);
+        verify(productService, times(1)).createProduct(productRequest);
         verify(productService, times(0)).updateProduct(any());
         verify(productService, times(0)).getProductBySku(any());
         verify(productService, times(0)).deleteProductBySku(any());
 
-        verify(productController, times(1)).createProduct(productDto);
+        verify(productController, times(1)).createProduct(productRequest);
         verify(productController, times(0)).updateProduct(any());
         verify(productController, times(0)).getProduct(any());
         verify(productController, times(0)).deleteProduct(any());
@@ -284,7 +284,7 @@ public class ProductControllerShould {
     }
 
     private void givenProductDto() {
-        productDto = ProductDto.builder()
+        productRequest = ProductRequest.builder()
                 .sku("SKU")
                 .name("NAME")
                 .price(1)
@@ -305,6 +305,6 @@ public class ProductControllerShould {
     }
 
     private void givenResponseEntityWhitObject() {
-        responseEntityWhitObject = new ResponseEntity<>(productDto, HttpStatus.OK);
+        responseEntityWhitObject = new ResponseEntity<>(productRequest, HttpStatus.OK);
     }
 }

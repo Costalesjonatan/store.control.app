@@ -16,7 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ProductDto {
+public class ProductRequest {
     @JsonProperty("sku")
     private String sku;
     @JsonProperty("name")

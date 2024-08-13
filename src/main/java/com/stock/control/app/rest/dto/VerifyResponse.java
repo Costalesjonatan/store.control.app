@@ -5,19 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-@Setter
 @Getter
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-@RequiredArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+@NoArgsConstructor
+public class VerifyResponse {
     @JsonProperty("username")
     private String username;
-
-    @JsonProperty("password")
-    private String password;
 }

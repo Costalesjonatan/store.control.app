@@ -5,7 +5,7 @@ import com.stock.control.app.domain.pojo.UserPojo;
 import com.stock.control.app.domain.protocol.AuthorityProtocolRepository;
 import com.stock.control.app.domain.protocol.UserProtocolRepository;
 import com.stock.control.app.domain.validator.UserValidator;
-import com.stock.control.app.rest.dto.UserDto;
+import com.stock.control.app.rest.dto.UserRequest;
 import com.stock.control.app.utils.AuthorityName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,7 +34,7 @@ public class UserServiceShouldTest {
     private UserService userService;
     private UserPojo userPojoResult;
     private Exception exceptionResult;
-    private UserDto userDto;
+    private UserRequest userRequest;
     private UserPojo userPojo;
     private UserPojo userPojoWhitAuthorities;
 
@@ -57,11 +57,11 @@ public class UserServiceShouldTest {
     }
 
     private void whenGettingUserByUsername() {
-        doNothing().when(userValidator).validateUsername(userDto.getUsername());
-        when(userProtocolRepository.findByName(userDto.getUsername())).thenReturn(Optional.of(userPojoWhitAuthorities));
+        doNothing().when(userValidator).validateUsername(userRequest.getUsername());
+        when(userProtocolRepository.findByName(userRequest.getUsername())).thenReturn(Optional.of(userPojoWhitAuthorities));
         when(authorityProtocolRepository.getAuthoritiesByUserId(1L)).thenReturn(List.of("USER"));
         try {
-            Optional<UserPojo> userPojo = userService.getUserBy(userDto.getUsername());
+            Optional<UserPojo> userPojo = userService.getUserBy(userRequest.getUsername());
             userPojo.ifPresent(pojo -> userPojoResult = pojo);
         } catch (Exception exception) {
             exceptionResult = exception;
@@ -69,35 +69,35 @@ public class UserServiceShouldTest {
     }
 
     private void thenUserIsReturned() {
-        verify(userService, only()).getUserBy(userDto.getUsername());
-        verify(userValidator, times(1)).validateUsername(userDto.getUsername());
-        verify(userProtocolRepository, times(1)).findByName(userDto.getUsername());
+        verify(userService, only()).getUserBy(userRequest.getUsername());
+        verify(userValidator, times(1)).validateUsername(userRequest.getUsername());
+        verify(userProtocolRepository, times(1)).findByName(userRequest.getUsername());
         verify(authorityProtocolRepository, times(1)).getAuthoritiesByUserId(1L);
         then(exceptionResult).isNull();
         then(userPojoResult).isEqualTo(userPojoWhitAuthorities);
     }
 
     private void whenCreatingUser() {
-        doNothing().when(userValidator).validatePassword(userDto.getPassword());
-        doNothing().when(userValidator).validateUsername(userDto.getUsername());
-        when(userMapper.toPojo(userDto)).thenReturn(userPojo);
+        doNothing().when(userValidator).validatePassword(userRequest.getPassword());
+        doNothing().when(userValidator).validateUsername(userRequest.getUsername());
+        when(userMapper.toPojo(userRequest)).thenReturn(userPojo);
         when(passwordEncoder.encode(userPojo.getPassword())).thenReturn("passwordEncoded");
         when(userProtocolRepository.create(userPojo)).thenReturn(Optional.of(userPojo));
         doNothing().when(authorityProtocolRepository).createAuthority(AuthorityName.USER, userPojo.getId());
 
         try {
-            userService.createUser(userDto);
+            userService.createUser(userRequest);
         } catch (Exception exception) {
             exceptionResult = exception;
         }
     }
 
     private void thenUserIsCreated() {
-        verify(userService, only()).createUser(userDto);
-        verify(userValidator, times(1)).validatePassword(userDto.getPassword());
-        verify(userValidator, times(1)).validateUsername(userDto.getUsername());
-        verify(userMapper, times(1)).toPojo(userDto);
-        verify(passwordEncoder, times(1)).encode(userDto.getPassword());
+        verify(userService, only()).createUser(userRequest);
+        verify(userValidator, times(1)).validatePassword(userRequest.getPassword());
+        verify(userValidator, times(1)).validateUsername(userRequest.getUsername());
+        verify(userMapper, times(1)).toPojo(userRequest);
+        verify(passwordEncoder, times(1)).encode(userRequest.getPassword());
         verify(userProtocolRepository, times(1)).create(userPojo);
         verify(authorityProtocolRepository, times(1))
                 .createAuthority(AuthorityName.USER, userPojo.getId());
@@ -126,19 +126,19 @@ public class UserServiceShouldTest {
     private void givenUserProtocolRepository() {userProtocolRepository = mock(UserProtocolRepository.class);}
 
     private void givenUserDto() {
-        userDto = UserDto.builder().username("username").password("password").build();
+        userRequest = UserRequest.builder().username("username").password("password").build();
     }
     private void givenUserPojo() {
         userPojo = UserPojo.builder()
-                .id(1L).username(userDto.getUsername())
-                .password(userDto.getPassword())
+                .id(1L).username(userRequest.getUsername())
+                .password(userRequest.getPassword())
                 .build();
     }
     private void givenUserPojoWhitAuthorities() {
         userPojoWhitAuthorities = UserPojo.builder()
                 .id(1L)
-                .username(userDto.getUsername())
-                .password(userDto.getPassword())
+                .username(userRequest.getUsername())
+                .password(userRequest.getPassword())
                 .roles(List.of("CUSTOMER")).build();
     }
 

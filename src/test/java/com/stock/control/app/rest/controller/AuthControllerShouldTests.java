@@ -1,7 +1,7 @@
 package com.stock.control.app.rest.controller;
 
 import com.stock.control.app.domain.service.UserService;
-import com.stock.control.app.rest.dto.UserDto;
+import com.stock.control.app.rest.dto.UserRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ public class AuthControllerShouldTests {
     private UserService userService;
     private UserDetailsService userDetailsService;
     private AuthController authController;
-    private UserDto userDto;
+    private UserRequest userRequest;
     private Exception expectedException;
     private ResponseEntity<String> response;
 
@@ -73,16 +73,16 @@ public class AuthControllerShouldTests {
     }
 
     private void whenSignInFail() {
-        when(userDetailsService.loadUserByUsername(userDto.getUsername())).thenThrow(new RuntimeException());
+        when(userDetailsService.loadUserByUsername(userRequest.getUsername())).thenThrow(new RuntimeException());
         try {
-            response = authController.signIn(userDto);
+            response = authController.signIn(userRequest);
         } catch (Exception exception) {
             expectedException = exception;
         }
     }
 
     private void thenSignInErrorIsHandled() {
-        verify(authController, only()).signIn(userDto);
+        verify(authController, only()).signIn(userRequest);
         verify(userDetailsService, only()).loadUserByUsername(any());
         verify(userService, never()).createUser(any());
         verify(userService, never()).getUserBy(any());
@@ -93,16 +93,16 @@ public class AuthControllerShouldTests {
     }
 
     private void whenSignIn() {
-        when(userDetailsService.loadUserByUsername(userDto.getUsername())).thenReturn(null);
+        when(userDetailsService.loadUserByUsername(userRequest.getUsername())).thenReturn(null);
         try {
-            response = authController.signIn(userDto);
+            response = authController.signIn(userRequest);
         } catch (Exception exception) {
             expectedException = exception;
         }
     }
 
     private void thenSignIn() {
-        verify(authController, only()).signIn(userDto);
+        verify(authController, only()).signIn(userRequest);
         verify(userDetailsService, only()).loadUserByUsername(any());
         verify(userService, never()).createUser(any());
         verify(userService, never()).getUserBy(any());
@@ -113,18 +113,18 @@ public class AuthControllerShouldTests {
     }
 
     private void whenSignUpFail() {
-        doThrow(RuntimeException.class).when(userService).createUser(userDto);
+        doThrow(RuntimeException.class).when(userService).createUser(userRequest);
         try {
-            response = authController.signUp(userDto);
+            response = authController.signUp(userRequest);
         } catch (Exception exception) {
             expectedException = exception;
         }
     }
 
     private void thenSignUpErrorIsHandled() {
-        verify(authController, only()).signUp(userDto);
+        verify(authController, only()).signUp(userRequest);
         verify(userDetailsService, never()).loadUserByUsername(any());
-        verify(userService, only()).createUser(userDto);
+        verify(userService, only()).createUser(userRequest);
 
         then(expectedException).isNull();
         then(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -132,18 +132,18 @@ public class AuthControllerShouldTests {
     }
 
     private void whenSignUp() {
-        doNothing().when(userService).createUser(userDto);
+        doNothing().when(userService).createUser(userRequest);
         try {
-            response = authController.signUp(userDto);
+            response = authController.signUp(userRequest);
         } catch (Exception exception) {
             expectedException = exception;
         }
     }
 
     private void thenSignUp() {
-        verify(authController, only()).signUp(userDto);
+        verify(authController, only()).signUp(userRequest);
         verify(userDetailsService, never()).loadUserByUsername(any());
-        verify(userService, only()).createUser(userDto);
+        verify(userService, only()).createUser(userRequest);
 
         then(expectedException).isNull();
         then(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -155,7 +155,7 @@ public class AuthControllerShouldTests {
     }
 
     private void givenUserDto() {
-        userDto = UserDto.builder()
+        userRequest = UserRequest.builder()
                 .username("USERNAME")
                 .password("PASSWORD")
                 .build();

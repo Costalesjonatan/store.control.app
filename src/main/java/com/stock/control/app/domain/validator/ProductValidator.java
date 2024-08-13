@@ -1,21 +1,21 @@
 package com.stock.control.app.domain.validator;
 
-import com.stock.control.app.rest.dto.ProductDto;
+import com.stock.control.app.rest.dto.ProductRequest;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProductValidator {
-    public void validateCreate(ProductDto productDto) {
-        validateSku(productDto.getSku());
-        validateName(productDto.getName());
-        validateCost(productDto.getCost());
-        validatePrice(productDto.getPrice(), productDto.getCost());
+    public void validateCreate(ProductRequest productRequest) {
+        validateSku(productRequest.getSku());
+        validateName(productRequest.getName());
+        validateCost(productRequest.getCost());
+        validatePrice(productRequest.getPrice(), productRequest.getCost());
     }
-    public void validateUpdate(ProductDto productDto) {
-        validateSku(productDto.getSku());
-        validateName(productDto.getName());
-        validateCost(productDto.getCost());
-        validatePrice(productDto.getPrice(), productDto.getCost());
+    public void validateUpdate(ProductRequest productRequest) {
+        validateSku(productRequest.getSku());
+        validateName(productRequest.getName());
+        validateCost(productRequest.getCost());
+        validatePrice(productRequest.getPrice(), productRequest.getCost());
     }
     public void validateSku(String sku) {
         if(validateString(sku)) throw new IllegalArgumentException("Invalid SKU.");

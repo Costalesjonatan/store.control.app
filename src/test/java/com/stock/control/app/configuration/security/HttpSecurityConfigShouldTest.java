@@ -1,5 +1,6 @@
 package com.stock.control.app.configuration.security;
 
+import com.stock.control.app.configuration.security.filter.JwtAuthenticationFilter;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,6 +20,7 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 public class HttpSecurityConfigShouldTest {
     private AuthenticationProvider authenticationProvider;
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
     private HttpSecurityConfiguration httpSecurityConfig;
     private HttpSecurity httpSecurity;
     private Exception returnedException;
@@ -27,6 +29,7 @@ public class HttpSecurityConfigShouldTest {
     @Test
     public void returnSecurityFilterChain() throws Exception {
         giveMeAuthenticationProvider();
+        giveMeJwtAuthenticationFilter();
         giveMeHttpSecurityConfig();
         giveMeHttpSecurity();
         whenGettingFilterChain();
@@ -38,6 +41,7 @@ public class HttpSecurityConfigShouldTest {
         when(httpSecurity.sessionManagement(any())).thenReturn(httpSecurity);
         when(httpSecurity.authenticationProvider(any())).thenReturn(httpSecurity);
         when(httpSecurity.authorizeHttpRequests(any())).thenReturn(httpSecurity);
+        when(httpSecurity.addFilterBefore(any(), any())).thenReturn(httpSecurity);
         when(httpSecurity.build()).thenReturn(mock(DefaultSecurityFilterChain.class));
         try {
             returnedObject = httpSecurityConfig.securityFilterChain(httpSecurity);
@@ -51,6 +55,7 @@ public class HttpSecurityConfigShouldTest {
         verify(httpSecurity, times(1)).csrf(any());
         verify(httpSecurity, times(1)).sessionManagement(any());
         verify(httpSecurity, times(1)).authenticationProvider(any());
+        verify(httpSecurity, times(1)).addFilterBefore(any(), any());
         verify(httpSecurity, times(1)).authorizeHttpRequests(any());
         verify(httpSecurity, times(1)).build();
         verifyNoMoreInteractions(httpSecurity,httpSecurityConfig);
@@ -66,7 +71,11 @@ public class HttpSecurityConfigShouldTest {
         authenticationProvider = mock(AuthenticationProvider.class);
     }
 
+    private void giveMeJwtAuthenticationFilter() {
+        jwtAuthenticationFilter = mock(JwtAuthenticationFilter.class);
+    }
+
     private void giveMeHttpSecurityConfig() {
-        httpSecurityConfig = spy(new HttpSecurityConfiguration(authenticationProvider));
+        httpSecurityConfig = spy(new HttpSecurityConfiguration(authenticationProvider, jwtAuthenticationFilter));
     }
 }

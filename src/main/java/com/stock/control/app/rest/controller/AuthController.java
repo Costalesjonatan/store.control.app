@@ -1,7 +1,7 @@
 package com.stock.control.app.rest.controller;
 
 import com.stock.control.app.domain.service.UserService;
-import com.stock.control.app.rest.dto.UserDto;
+import com.stock.control.app.rest.dto.UserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,7 +18,7 @@ public class AuthController {
     private final UserDetailsService userDetailsService;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody UserDto user) {
+    public ResponseEntity<String> signUp(@RequestBody UserRequest user) {
         try {
             userService.createUser(user);
             return ResponseEntity.ok("Sign up!");
@@ -28,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<String> signIn(@RequestBody UserDto user) {
+    public ResponseEntity<String> signIn(@RequestBody UserRequest user) {
         try {
             userDetailsService.loadUserByUsername(user.getUsername());
             return ResponseEntity.ok("Sign in!");
@@ -38,7 +38,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestBody UserDto user) {
+    public ResponseEntity<String> logout(@RequestBody UserRequest user) {
         try {
             return ResponseEntity.ok("Logout!");
         } catch (Exception exception){

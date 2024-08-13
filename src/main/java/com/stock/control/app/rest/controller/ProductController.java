@@ -1,7 +1,7 @@
 package com.stock.control.app.rest.controller;
 
 import com.stock.control.app.domain.service.ProductService;
-import com.stock.control.app.rest.dto.ProductDto;
+import com.stock.control.app.rest.dto.ProductRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +21,9 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping("/")
-    public ResponseEntity<String> createProduct(@RequestBody ProductDto productDto) {
+    public ResponseEntity<String> createProduct(@RequestBody ProductRequest productRequest) {
         try {
-            productService.createProduct(productDto);
+            productService.createProduct(productRequest);
             return new ResponseEntity<>("Created.", HttpStatus.CREATED);
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -32,9 +32,9 @@ public class ProductController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<String> updateProduct(@RequestBody ProductDto productDto) {
+    public ResponseEntity<String> updateProduct(@RequestBody ProductRequest productRequest) {
         try {
-            productService.updateProduct(productDto);
+            productService.updateProduct(productRequest);
             return new ResponseEntity<>("Updated.", HttpStatus.OK);
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -43,7 +43,7 @@ public class ProductController {
     }
 
     @GetMapping("/{sku}")
-    public ResponseEntity<ProductDto> getProduct(@RequestParam String sku) {
+    public ResponseEntity<ProductRequest> getProduct(@RequestParam String sku) {
         try {
             return new ResponseEntity<>(productService.getProductBySku(sku), HttpStatus.OK);
         } catch (Exception exception) {
