@@ -1,7 +1,7 @@
 package com.stock.control.app.persistence.mapper;
 
 import com.stock.control.app.domain.pojo.UserPojo;
-import com.stock.control.app.persistence.entity.UserEntity;
+import com.stock.control.app.persistence.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -14,11 +14,11 @@ import static org.mockito.Mockito.verify;
 @ActiveProfiles("test")
 public class UserPersistenceMapperShouldTests {
     private UserPersistenceMapper userPersistenceMapper;
-    private UserEntity resultUserEntity;
+    private User resultUser;
     private UserPojo resultUserPojo;
     private Exception resultException;
     private UserPojo userPojo;
-    private UserEntity userEntity;
+    private User user;
 
 
     @Test
@@ -50,7 +50,7 @@ public class UserPersistenceMapperShouldTests {
 
     private void whenMappingToPojo() {
         try {
-            resultUserPojo = userPersistenceMapper.toPojo(userEntity);
+            resultUserPojo = userPersistenceMapper.toPojo(user);
         } catch (Exception exception) {
             resultException = exception;
         }
@@ -59,7 +59,7 @@ public class UserPersistenceMapperShouldTests {
     private void thenUserEntityToPojoIsMapped() {
         verify(userPersistenceMapper, times(0)).toCreateEntity(any());
         verify(userPersistenceMapper, times(0)).toUpdateEntity(any());
-        verify(userPersistenceMapper, times(1)).toPojo(userEntity);
+        verify(userPersistenceMapper, times(1)).toPojo(user);
         then(resultException).isNull();
         then(resultUserPojo.getId()).isEqualTo(1L);
         then(resultUserPojo.getUsername()).isEqualTo("username");
@@ -68,7 +68,7 @@ public class UserPersistenceMapperShouldTests {
 
     private void whenMappingToUpdateUser() {
         try {
-            resultUserEntity = userPersistenceMapper.toUpdateEntity(userPojo);
+            resultUser = userPersistenceMapper.toUpdateEntity(userPojo);
         } catch (Exception exception) {
             resultException = exception;
         }
@@ -79,14 +79,14 @@ public class UserPersistenceMapperShouldTests {
         verify(userPersistenceMapper, times(1)).toUpdateEntity(userPojo);
         verify(userPersistenceMapper, times(0)).toPojo(any());
         then(resultException).isNull();
-        then(resultUserEntity.getId()).isEqualTo(1L);
-        then(resultUserEntity.getUsername()).isEqualTo("username");
-        then(resultUserEntity.getPassword()).isEqualTo("password");
+        then(resultUser.getId()).isEqualTo(1L);
+        then(resultUser.getUsername()).isEqualTo("username");
+        then(resultUser.getPassword()).isEqualTo("password");
     }
 
     private void whenMappingToCreateUser() {
         try {
-            resultUserEntity = userPersistenceMapper.toCreateEntity(userPojo);
+            resultUser = userPersistenceMapper.toCreateEntity(userPojo);
         } catch (Exception exception) {
             resultException = exception;
         }
@@ -97,9 +97,9 @@ public class UserPersistenceMapperShouldTests {
         verify(userPersistenceMapper, times(0)).toUpdateEntity(any());
         verify(userPersistenceMapper, times(0)).toPojo(any());
         then(resultException).isNull();
-        then(resultUserEntity.getId()).isNull();
-        then(resultUserEntity.getUsername()).isEqualTo("username");
-        then(resultUserEntity.getPassword()).isEqualTo("password");
+        then(resultUser.getId()).isNull();
+        then(resultUser.getUsername()).isEqualTo("username");
+        then(resultUser.getPassword()).isEqualTo("password");
     }
 
     private void givenUserPersistenceMapper() {
@@ -111,6 +111,6 @@ public class UserPersistenceMapperShouldTests {
     }
     
     private void givenUserEntity() {
-        userEntity = UserEntity.builder().id(1L).username("username").password("password").build();
+        user = User.builder().id(1L).username("username").password("password").build();
     }
 }

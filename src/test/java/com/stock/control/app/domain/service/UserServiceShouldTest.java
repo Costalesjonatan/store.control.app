@@ -139,7 +139,7 @@ public class UserServiceShouldTest {
                 .id(1L)
                 .username(userDto.getUsername())
                 .password(userDto.getPassword())
-                .authorities(List.of("CUSTOMER")).build();
+                .roles(List.of("CUSTOMER")).build();
     }
 
 }

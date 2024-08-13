@@ -1,6 +1,8 @@
 package com.stock.control.app.domain.service;
 
 import com.stock.control.app.domain.pojo.UserPojo;
+import com.stock.control.app.utils.Permission;
+import com.stock.control.app.utils.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,9 +30,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         if(user.isPresent()) {
             UserPojo userPojo = user.get();
-            if(userPojo.getAuthorities() != null) {
-                for(String authority : userPojo.getAuthorities()) {
-                    authorities.add(new SimpleGrantedAuthority(authority));
+            if(userPojo.getRoles() != null) {
+                for(String role : userPojo.getRoles()) {
+                    Role roleEnum = Role.valueOf(role);
+                    for(Permission permission: roleEnum.getPermissions()) {
+                        authorities.add(new SimpleGrantedAuthority(permission.name()));
+                    }
+                    authorities.add(new SimpleGrantedAuthority("ROLE_" + roleEnum.name()));
                 }
             }
 

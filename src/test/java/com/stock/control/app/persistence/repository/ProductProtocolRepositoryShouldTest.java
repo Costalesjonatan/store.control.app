@@ -1,7 +1,7 @@
 package com.stock.control.app.persistence.repository;
 
 import com.stock.control.app.domain.pojo.ProductPojo;
-import com.stock.control.app.persistence.entity.ProductEntity;
+import com.stock.control.app.persistence.entity.Product;
 import com.stock.control.app.persistence.mapper.ProductPersistenceMapper;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +24,7 @@ public class ProductProtocolRepositoryShouldTest {
     private ProductJpaRepository productJpaRepository;
     private ProductPersistenceMapper productPersistenceMapper;
     private ProductProtocolRepository productProtocolRepository;
-    private ProductEntity productEntity;
+    private Product product;
     private ProductPojo productPojo;
     private Exception expectedException;
     private ProductPojo expectedProductPojo;
@@ -131,8 +131,8 @@ public class ProductProtocolRepositoryShouldTest {
 
     private void whenCreatingProduct() {
         when(productJpaRepository.findBySku(productPojo.getSku())).thenReturn(Optional.empty());
-        when(productPersistenceMapper.toEntity(productPojo)).thenReturn(productEntity);
-        when(productJpaRepository.save(productEntity)).thenReturn(productEntity);
+        when(productPersistenceMapper.toEntity(productPojo)).thenReturn(product);
+        when(productJpaRepository.save(product)).thenReturn(product);
         try {
             productProtocolRepository.createProduct(productPojo);
         } catch (Exception exception) {
@@ -145,13 +145,13 @@ public class ProductProtocolRepositoryShouldTest {
         verify(productProtocolRepository, only()).createProduct(productPojo);
         verify(productJpaRepository, atMostOnce()).findBySku(productPojo.getSku());
         verify(productPersistenceMapper, times(1)).toEntity(productPojo);
-        verify(productJpaRepository, times(1)).save(productEntity);
+        verify(productJpaRepository, times(1)).save(product);
 
         then(expectedException).isNull();
     }
 
     private void whenNotCreatingProduct() {
-        when(productJpaRepository.findBySku(productPojo.getSku())).thenReturn(Optional.of(productEntity));
+        when(productJpaRepository.findBySku(productPojo.getSku())).thenReturn(Optional.of(product));
         try {
             productProtocolRepository.createProduct(productPojo);
         } catch (Exception exception) {
@@ -169,9 +169,9 @@ public class ProductProtocolRepositoryShouldTest {
     }
 
     private void whenUpdatingProduct() {
-        when(productJpaRepository.findBySku(productPojo.getSku())).thenReturn(Optional.of(productEntity));
-        when(productPersistenceMapper.toEntity(productPojo)).thenReturn(productEntity);
-        when(productJpaRepository.save(productEntity)).thenReturn(productEntity);
+        when(productJpaRepository.findBySku(productPojo.getSku())).thenReturn(Optional.of(product));
+        when(productPersistenceMapper.toEntity(productPojo)).thenReturn(product);
+        when(productJpaRepository.save(product)).thenReturn(product);
         try {
             productProtocolRepository.updateProduct(productPojo);
         } catch (Exception exception) {
@@ -184,7 +184,7 @@ public class ProductProtocolRepositoryShouldTest {
         verify(productProtocolRepository, only()).updateProduct(productPojo);
         verify(productJpaRepository, atMostOnce()).findBySku(productPojo.getSku());
         verify(productPersistenceMapper, atMostOnce()).toEntity(productPojo);
-        verify(productJpaRepository, atMostOnce()).save(productEntity);
+        verify(productJpaRepository, atMostOnce()).save(product);
 
         then(expectedException).isNull();
     }
@@ -208,8 +208,8 @@ public class ProductProtocolRepositoryShouldTest {
     }
 
     private void whenGettingProductBySku() {
-        when(productJpaRepository.findBySku(productPojo.getSku())).thenReturn(Optional.of(productEntity));
-        when(productPersistenceMapper.toPojo(productEntity)).thenReturn(productPojo);
+        when(productJpaRepository.findBySku(productPojo.getSku())).thenReturn(Optional.of(product));
+        when(productPersistenceMapper.toPojo(product)).thenReturn(productPojo);
         try {
             expectedProductPojo = productProtocolRepository.getProductBySku(productPojo.getSku());
         } catch (Exception exception) {
@@ -221,7 +221,7 @@ public class ProductProtocolRepositoryShouldTest {
     private void thenProductIsReturnedBySku() {
         verify(productProtocolRepository, only()).getProductBySku(productPojo.getSku());
         verify(productJpaRepository, only()).findBySku(productPojo.getSku());
-        verify(productPersistenceMapper, only()).toPojo(productEntity);
+        verify(productPersistenceMapper, only()).toPojo(product);
 
         then(expectedException).isNull();
         then(expectedProductPojo).isNotNull();
@@ -240,15 +240,15 @@ public class ProductProtocolRepositoryShouldTest {
     private void thenProductIsNotReturnedBySku() {
         verify(productProtocolRepository, only()).getProductBySku(productPojo.getSku());
         verify(productJpaRepository, only()).findBySku(productPojo.getSku());
-        verify(productPersistenceMapper, never()).toPojo(productEntity);
+        verify(productPersistenceMapper, never()).toPojo(product);
 
         then(expectedException).isNotNull();
         then(expectedProductPojo).isNull();
     }
 
     private void whenDeletingProduct() {
-        when(productJpaRepository.findBySku(productPojo.getSku())).thenReturn(Optional.of(productEntity));
-        doNothing().when(productJpaRepository).delete(productEntity);
+        when(productJpaRepository.findBySku(productPojo.getSku())).thenReturn(Optional.of(product));
+        doNothing().when(productJpaRepository).delete(product);
         try {
             productProtocolRepository.deleteProduct(productPojo.getSku());
         } catch (Exception exception) {
@@ -259,7 +259,7 @@ public class ProductProtocolRepositoryShouldTest {
 
     private void thenProductIsDeleted() {
         verify(productJpaRepository, atMostOnce()).findBySku(productPojo.getSku());
-        verify(productJpaRepository, atMostOnce()).delete(productEntity);
+        verify(productJpaRepository, atMostOnce()).delete(product);
         verifyNoMoreInteractions(productJpaRepository);
         verify(productProtocolRepository, only()).deleteProduct(productPojo.getSku());
 
@@ -297,7 +297,7 @@ public class ProductProtocolRepositoryShouldTest {
     }
 
     private void givenProductEntity() {
-        productEntity = ProductEntity.builder()
+        product = Product.builder()
                 .id(1L)
                 .sku("SKU")
                 .name("NAME")

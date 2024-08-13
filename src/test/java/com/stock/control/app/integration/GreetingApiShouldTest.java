@@ -6,7 +6,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
@@ -27,7 +26,7 @@ public class GreetingApiShouldTest {
 
 
     @Test
-    void getLogin() {
+    void notLogin() {
         whenGettingGreetingWhitOutAuthentication();
         thenLoginIsGot();
     }
@@ -44,9 +43,6 @@ public class GreetingApiShouldTest {
     }
 
     private void thenLoginIsGot() {
-        then(expectedException).isNull();
-        then(expectedResponse.getBody()).isNotNull();
-        then(expectedResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        then(expectedResponse.getBody()).contains("login");
+        then(expectedException).isNotNull();
     }
 }

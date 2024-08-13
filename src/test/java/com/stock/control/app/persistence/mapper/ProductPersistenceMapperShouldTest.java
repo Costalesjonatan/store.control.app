@@ -1,7 +1,7 @@
 package com.stock.control.app.persistence.mapper;
 
 import com.stock.control.app.domain.pojo.ProductPojo;
-import com.stock.control.app.persistence.entity.ProductEntity;
+import com.stock.control.app.persistence.entity.Product;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.BDDAssertions.then;
@@ -11,7 +11,7 @@ import static org.mockito.Mockito.verify;
 
 public class ProductPersistenceMapperShouldTest {
     private ProductPersistenceMapper productPersistenceMapper;
-    private ProductEntity productEntity;
+    private Product product;
     private ProductPojo productPojo;
     private Exception expectedException;
 
@@ -30,7 +30,7 @@ public class ProductPersistenceMapperShouldTest {
         thenProductPojoIsMapped();
     }
     private void givenProductEntity() {
-        productEntity = ProductEntity.builder()
+        product = Product.builder()
                 .id(1L)
                 .sku("SKU")
                 .name("NAME")
@@ -51,7 +51,7 @@ public class ProductPersistenceMapperShouldTest {
     }
     private void whenProductEntityIsMapping() {
         try {
-            productPojo = productPersistenceMapper.toPojo(productEntity);
+            productPojo = productPersistenceMapper.toPojo(product);
         } catch (Exception exception) {
             expectedException = exception;
             exception.printStackTrace();
@@ -59,27 +59,27 @@ public class ProductPersistenceMapperShouldTest {
     }
     private void whenProductPojoIsMapping() {
         try {
-            productEntity = productPersistenceMapper.toEntity(productPojo);
+            product = productPersistenceMapper.toEntity(productPojo);
         } catch (Exception exception) {
             expectedException = exception;
             exception.printStackTrace();
         }
     }
     private void thenProductEntityIsMapped() {
-        verify(productPersistenceMapper, only()).toPojo(productEntity);
+        verify(productPersistenceMapper, only()).toPojo(product);
         then(expectedException).isNull();
-        then(productPojo.getSku()).isEqualTo(productEntity.getSku());
-        then(productPojo.getName()).isEqualTo(productEntity.getName());
-        then(productPojo.getPrice()).isEqualTo(productEntity.getPrice());
-        then(productPojo.getCost()).isEqualTo(productEntity.getCost());
-        then(productPojo.getId()).isEqualTo(productEntity.getId());
+        then(productPojo.getSku()).isEqualTo(product.getSku());
+        then(productPojo.getName()).isEqualTo(product.getName());
+        then(productPojo.getPrice()).isEqualTo(product.getPrice());
+        then(productPojo.getCost()).isEqualTo(product.getCost());
+        then(productPojo.getId()).isEqualTo(product.getId());
     }
     private void thenProductPojoIsMapped() {
         verify(productPersistenceMapper, only()).toEntity(productPojo);
         then(expectedException).isNull();
-        then(productEntity.getSku()).isEqualTo(productPojo.getSku());
-        then(productEntity.getName()).isEqualTo(productPojo.getName());
-        then(productEntity.getPrice()).isEqualTo(productPojo.getPrice());
-        then(productEntity.getCost()).isEqualTo(productPojo.getCost());
+        then(product.getSku()).isEqualTo(productPojo.getSku());
+        then(product.getName()).isEqualTo(productPojo.getName());
+        then(product.getPrice()).isEqualTo(productPojo.getPrice());
+        then(product.getCost()).isEqualTo(productPojo.getCost());
     }
 }

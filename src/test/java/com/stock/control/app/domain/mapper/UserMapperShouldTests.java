@@ -42,7 +42,7 @@ public class UserMapperShouldTests {
         then(expectedUserPojo).isNotNull();
         then(expectedUserPojo.getUsername()).isEqualTo(userDto.getUsername());
         then(expectedUserPojo.getPassword()).isEqualTo(userDto.getPassword());
-        then(expectedUserPojo.getAuthorities()).isNull();
+        then(expectedUserPojo.getRoles()).isNull();
     }
 
     private void givenUserDomainMapper() {

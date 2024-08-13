@@ -35,7 +35,7 @@ public class UserService {
     public Optional<UserPojo> getUserBy(String username) {
         userValidator.validateUsername(username);
         Optional<UserPojo> user = userProtocolRepository.findByName(username);
-        user.ifPresent(userPojo -> userPojo.setAuthorities(authorityProtocolRepository.getAuthoritiesByUserId(userPojo.getId())));
+        user.ifPresent(userPojo -> userPojo.setRoles(authorityProtocolRepository.getAuthoritiesByUserId(userPojo.getId())));
         return user;
     }
 }

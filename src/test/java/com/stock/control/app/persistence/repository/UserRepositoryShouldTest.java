@@ -1,7 +1,7 @@
 package com.stock.control.app.persistence.repository;
 
 import com.stock.control.app.domain.pojo.UserPojo;
-import com.stock.control.app.persistence.entity.UserEntity;
+import com.stock.control.app.persistence.entity.User;
 import com.stock.control.app.persistence.mapper.UserPersistenceMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,9 +28,9 @@ public class UserRepositoryShouldTest {
     private Exception expectedException;
     private UserPojo expectedUser;
     private UserPojo saveUserPojo;
-    private UserEntity saveUserEntity;
+    private User saveUser;
     private UserPojo updateUserPojo;
-    private UserEntity updateUserEntity;
+    private User updateUser;
     private final String USERNAME = "USERNAME";
     private final String PASSWORD = "PASSWORD";
 
@@ -84,9 +84,9 @@ public class UserRepositoryShouldTest {
     private void thenUserIsNotFound() {
         verify(userRepository, only()).findByName(USERNAME);
         verify(userPersistenceMapper, never()).toCreateEntity(any(UserPojo.class));
-        verify(userPersistenceMapper, never()).toPojo(any(UserEntity.class));
+        verify(userPersistenceMapper, never()).toPojo(any(User.class));
         verify(userPersistenceMapper, never()).toUpdateEntity(any(UserPojo.class));
-        verify(userJpaRepository, never()).save(any(UserEntity.class));
+        verify(userJpaRepository, never()).save(any(User.class));
         verify(userJpaRepository, never()).findBy(any(), any());
         verify(userJpaRepository, times(1)).findByUsername(USERNAME);
         then(expectedUser).isNull();
@@ -94,9 +94,9 @@ public class UserRepositoryShouldTest {
     }
 
     private void whenCreatingUser() {
-        when(userPersistenceMapper.toCreateEntity(saveUserPojo)).thenReturn(saveUserEntity);
-        when(userJpaRepository.save(any(UserEntity.class))).thenReturn(saveUserEntity);
-        when(userPersistenceMapper.toPojo(any(UserEntity.class))).thenReturn(saveUserPojo);
+        when(userPersistenceMapper.toCreateEntity(saveUserPojo)).thenReturn(saveUser);
+        when(userJpaRepository.save(any(User.class))).thenReturn(saveUser);
+        when(userPersistenceMapper.toPojo(any(User.class))).thenReturn(saveUserPojo);
 
         try {
             userRepository.create(saveUserPojo);
@@ -109,9 +109,9 @@ public class UserRepositoryShouldTest {
     private void thenUserIsCreated() {
         verify(userRepository, only()).create(saveUserPojo);
         verify(userPersistenceMapper, times(1)).toCreateEntity(saveUserPojo);
-        verify(userPersistenceMapper, times(1)).toPojo(saveUserEntity);
+        verify(userPersistenceMapper, times(1)).toPojo(saveUser);
         verify(userPersistenceMapper, never()).toUpdateEntity(any(UserPojo.class));
-        verify(userJpaRepository, times(1)).save(saveUserEntity);
+        verify(userJpaRepository, times(1)).save(saveUser);
         verify(userJpaRepository, never()).findBy(any(), any());
         verify(userJpaRepository, never()).findByUsername(anyString());
         then(expectedException).isNull();
@@ -119,8 +119,8 @@ public class UserRepositoryShouldTest {
 
     private void whenUpdatingUser() {
 
-        when(userPersistenceMapper.toUpdateEntity(updateUserPojo)).thenReturn(updateUserEntity);
-        when(userJpaRepository.save(updateUserEntity)).thenReturn(updateUserEntity);
+        when(userPersistenceMapper.toUpdateEntity(updateUserPojo)).thenReturn(updateUser);
+        when(userJpaRepository.save(updateUser)).thenReturn(updateUser);
 
         try {
             userRepository.update(updateUserPojo);
@@ -133,17 +133,17 @@ public class UserRepositoryShouldTest {
     private void thenUserIsUpdated() {
         verify(userRepository, only()).update(updateUserPojo);
         verify(userPersistenceMapper, never()).toCreateEntity(any(UserPojo.class));
-        verify(userPersistenceMapper, never()).toPojo(any(UserEntity.class));
+        verify(userPersistenceMapper, never()).toPojo(any(User.class));
         verify(userPersistenceMapper, times(1)).toUpdateEntity(updateUserPojo);
-        verify(userJpaRepository, times(1)).save(updateUserEntity);
+        verify(userJpaRepository, times(1)).save(updateUser);
         verify(userJpaRepository, never()).findBy(any(), any());
         verify(userJpaRepository, never()).findByUsername(anyString());
         then(expectedException).isNull();
     }
 
     private void whenSearchingByName() {
-        when(userJpaRepository.findByUsername(USERNAME)).thenReturn(Optional.of(saveUserEntity));
-        when(userPersistenceMapper.toPojo(any(UserEntity.class))).thenReturn(saveUserPojo);
+        when(userJpaRepository.findByUsername(USERNAME)).thenReturn(Optional.of(saveUser));
+        when(userPersistenceMapper.toPojo(any(User.class))).thenReturn(saveUserPojo);
 
         try {
             Optional<UserPojo> user = userRepository.findByName(USERNAME);
@@ -156,9 +156,9 @@ public class UserRepositoryShouldTest {
     private void thenUserIsFound() {
         verify(userRepository, only()).findByName(USERNAME);
         verify(userPersistenceMapper, never()).toCreateEntity(any(UserPojo.class));
-        verify(userPersistenceMapper, times(1)).toPojo(saveUserEntity);
+        verify(userPersistenceMapper, times(1)).toPojo(saveUser);
         verify(userPersistenceMapper, never()).toUpdateEntity(any(UserPojo.class));
-        verify(userJpaRepository, never()).save(any(UserEntity.class));
+        verify(userJpaRepository, never()).save(any(User.class));
         verify(userJpaRepository, never()).findBy(any(), any());
         verify(userJpaRepository, times(1)).findByUsername(USERNAME);
         then(expectedUser).isNotNull();
@@ -184,7 +184,7 @@ public class UserRepositoryShouldTest {
                 .build();
     }
     private void givenSaveUserEntity () {
-        saveUserEntity = UserEntity.builder()
+        saveUser = User.builder()
                 .username(USERNAME)
                 .password(PASSWORD)
                 .build();
@@ -197,7 +197,7 @@ public class UserRepositoryShouldTest {
                 .build();
     }
     private void givenUpdateUserEntity () {
-        updateUserEntity = UserEntity.builder()
+        updateUser = User.builder()
                 .id(1L)
                 .username(USERNAME)
                 .password(PASSWORD)

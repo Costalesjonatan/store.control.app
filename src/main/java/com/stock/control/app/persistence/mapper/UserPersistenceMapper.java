@@ -1,32 +1,32 @@
 package com.stock.control.app.persistence.mapper;
 
 import com.stock.control.app.domain.pojo.UserPojo;
-import com.stock.control.app.persistence.entity.UserEntity;
+import com.stock.control.app.persistence.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserPersistenceMapper {
 
-    public UserEntity toCreateEntity(UserPojo userPojo) {
-        return UserEntity.builder()
+    public User toCreateEntity(UserPojo userPojo) {
+        return User.builder()
                 .username(userPojo.getUsername())
                 .password(userPojo.getPassword())
                 .build();
     }
 
-    public UserEntity toUpdateEntity(UserPojo userPojo) {
-        return UserEntity.builder()
+    public User toUpdateEntity(UserPojo userPojo) {
+        return User.builder()
                 .id(userPojo.getId())
                 .username(userPojo.getUsername())
                 .password(userPojo.getPassword())
                 .build();
     }
 
-    public UserPojo toPojo(UserEntity userEntity) {
+    public UserPojo toPojo(User user) {
         return UserPojo.builder()
-                .id(userEntity.getId())
-                .username(userEntity.getUsername())
-                .password(userEntity.getPassword())
+                .id(user.getId())
+                .username(user.getUsername())
+                .password(user.getPassword())
                 .build();
     }
 }

@@ -36,4 +36,13 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Bad credentials!");
         }
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody UserDto user) {
+        try {
+            return ResponseEntity.ok("Logout!");
+        } catch (Exception exception){
+            return ResponseEntity.badRequest().body("Something went wrong.");
+        }
+    }
 }

@@ -1,7 +1,7 @@
 package com.stock.control.app.persistence.repository;
 
-import com.stock.control.app.persistence.entity.AuthorityEntity;
-import com.stock.control.app.persistence.entity.UserAuthorityEntity;
+import com.stock.control.app.persistence.entity.Role;
+import com.stock.control.app.persistence.entity.UserRole;
 import com.stock.control.app.utils.AuthorityName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
@@ -28,8 +28,8 @@ public class UserAuthorityRepositoryShouldTests {
     private UserAuthorityRepository userAuthorityRepository;
     private Exception expectedException;
     private List<String> expectedAuthorities;
-    private AuthorityEntity authorityEntity;
-    private UserAuthorityEntity userAuthorityEntity;
+    private Role role;
+    private UserRole userRole;
     private final String ROLE = "USER";
 
     @Test
@@ -104,9 +104,9 @@ public class UserAuthorityRepositoryShouldTests {
     }
 
     private void whenGettingAuthorities() {
-        when(userAuthorityJpaRepository.findByUserId(1L)).thenReturn(List.of(userAuthorityEntity));
-        when(authorityJpaRepository.findById(userAuthorityEntity.getAuthorityId()))
-                .thenReturn(Optional.of(authorityEntity));
+        when(userAuthorityJpaRepository.findByUserId(1L)).thenReturn(List.of(userRole));
+        when(authorityJpaRepository.findById(userRole.getRoleId()))
+                .thenReturn(Optional.of(role));
         try {
             expectedAuthorities = userAuthorityRepository.getAuthoritiesByUserId(1L);
         } catch (Exception exception) {
@@ -120,15 +120,15 @@ public class UserAuthorityRepositoryShouldTests {
         verify(userAuthorityRepository, times(0)).createAuthority(any(), any());
 
         verify(userAuthorityJpaRepository, times(1)).findByUserId(1L);
-        verify(authorityJpaRepository, times(1)).findById(userAuthorityEntity.getAuthorityId());
+        verify(authorityJpaRepository, times(1)).findById(userRole.getRoleId());
         then(expectedException).isNull();
         then(expectedAuthorities.size()).isEqualTo(1);
         then(expectedAuthorities.get(0)).isEqualTo(ROLE);
     }
 
     private void whenRevokingAuthorityAlreadyRevoked() {
-        when(authorityJpaRepository.findByName(ROLE)).thenReturn(authorityEntity);
-        when(userAuthorityJpaRepository.findByUserIdAndAuthorityId(1L, authorityEntity.getId()))
+        when(authorityJpaRepository.findByName(ROLE)).thenReturn(role);
+        when(userAuthorityJpaRepository.findByUserIdAndRoleId(1L, role.getId()))
                 .thenReturn(null);
         try {
             userAuthorityRepository.revokeAuthority(AuthorityName.USER, 1L);
@@ -144,16 +144,16 @@ public class UserAuthorityRepositoryShouldTests {
 
         verify(authorityJpaRepository, times(1)).findByName(ROLE);
         verify(userAuthorityJpaRepository, times(1))
-                .findByUserIdAndAuthorityId(1L, authorityEntity.getId());
-        verify(userAuthorityJpaRepository, times(0)).delete(any(UserAuthorityEntity.class));
+                .findByUserIdAndRoleId(1L, role.getId());
+        verify(userAuthorityJpaRepository, times(0)).delete(any(UserRole.class));
         then(expectedException).isNull();
     }
 
     private void whenRevokingAuthority() {
-        when(authorityJpaRepository.findByName(ROLE)).thenReturn(authorityEntity);
-        when(userAuthorityJpaRepository.findByUserIdAndAuthorityId(1L, authorityEntity.getId()))
-                .thenReturn(userAuthorityEntity);
-        doNothing().when(userAuthorityJpaRepository).delete(any(UserAuthorityEntity.class));
+        when(authorityJpaRepository.findByName(ROLE)).thenReturn(role);
+        when(userAuthorityJpaRepository.findByUserIdAndRoleId(1L, role.getId()))
+                .thenReturn(userRole);
+        doNothing().when(userAuthorityJpaRepository).delete(any(UserRole.class));
 
         try {
             userAuthorityRepository.revokeAuthority(AuthorityName.USER, 1L);
@@ -169,15 +169,15 @@ public class UserAuthorityRepositoryShouldTests {
 
         verify(authorityJpaRepository, times(1)).findByName(ROLE);
         verify(userAuthorityJpaRepository, times(1))
-                .findByUserIdAndAuthorityId(1L, authorityEntity.getId());
-        verify(userAuthorityJpaRepository, times(1)).delete(any(UserAuthorityEntity.class));
+                .findByUserIdAndRoleId(1L, role.getId());
+        verify(userAuthorityJpaRepository, times(1)).delete(any(UserRole.class));
         then(expectedException).isNull();
     }
 
     private void whenCreatingAuthorityThatAlreadyExist() {
-        when(authorityJpaRepository.findByName(ROLE)).thenReturn(authorityEntity);
-        when(userAuthorityJpaRepository.findByUserIdAndAuthorityId(1L, authorityEntity.getId()))
-                .thenReturn(userAuthorityEntity);
+        when(authorityJpaRepository.findByName(ROLE)).thenReturn(role);
+        when(userAuthorityJpaRepository.findByUserIdAndRoleId(1L, role.getId()))
+                .thenReturn(userRole);
         try {
             userAuthorityRepository.createAuthority(AuthorityName.USER, 1L);
         } catch (Exception exception) {
@@ -192,17 +192,17 @@ public class UserAuthorityRepositoryShouldTests {
 
         verify(authorityJpaRepository, times(1)).findByName(ROLE);
         verify(userAuthorityJpaRepository, times(1))
-                .findByUserIdAndAuthorityId(1L, authorityEntity.getId());
-        verify(userAuthorityJpaRepository, times(0)).save(any(UserAuthorityEntity.class));
+                .findByUserIdAndRoleId(1L, role.getId());
+        verify(userAuthorityJpaRepository, times(0)).save(any(UserRole.class));
         then(expectedException).isNull();
     }
 
 
     private void whenCreatingAuthority() {
-        when(authorityJpaRepository.findByName(ROLE)).thenReturn(authorityEntity);
-        when(userAuthorityJpaRepository.findByUserIdAndAuthorityId(1L, authorityEntity.getId()))
+        when(authorityJpaRepository.findByName(ROLE)).thenReturn(role);
+        when(userAuthorityJpaRepository.findByUserIdAndRoleId(1L, role.getId()))
                 .thenReturn(null);
-        when(userAuthorityJpaRepository.save(any(UserAuthorityEntity.class))).thenReturn(userAuthorityEntity);
+        when(userAuthorityJpaRepository.save(any(UserRole.class))).thenReturn(userRole);
 
         try {
             userAuthorityRepository.createAuthority(AuthorityName.USER, 1L);
@@ -219,8 +219,8 @@ public class UserAuthorityRepositoryShouldTests {
 
         verify(authorityJpaRepository, times(1)).findByName(ROLE);
         verify(userAuthorityJpaRepository, times(1))
-                .findByUserIdAndAuthorityId(1L, authorityEntity.getId());
-        verify(userAuthorityJpaRepository, times(1)).save(any(UserAuthorityEntity.class));
+                .findByUserIdAndRoleId(1L, role.getId());
+        verify(userAuthorityJpaRepository, times(1)).save(any(UserRole.class));
         then(expectedException).isNull();
     }
 
@@ -239,16 +239,16 @@ public class UserAuthorityRepositoryShouldTests {
     }
 
     private void givenAuthorityEntity() {
-        authorityEntity = AuthorityEntity.builder()
+        role = Role.builder()
                 .id(1L)
                 .name("USER")
                 .build();
     }
 
     private void givenUserAuthorityEntity() {
-        userAuthorityEntity = UserAuthorityEntity.builder()
+        userRole = UserRole.builder()
                 .userId(1L)
-                .authorityId(1L)
+                .roleId(1L)
                 .build();
     }
 }

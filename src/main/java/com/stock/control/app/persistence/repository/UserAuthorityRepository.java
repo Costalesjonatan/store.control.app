@@ -1,8 +1,8 @@
 package com.stock.control.app.persistence.repository;
 
 import com.stock.control.app.domain.protocol.AuthorityProtocolRepository;
-import com.stock.control.app.persistence.entity.AuthorityEntity;
-import com.stock.control.app.persistence.entity.UserAuthorityEntity;
+import com.stock.control.app.persistence.entity.Role;
+import com.stock.control.app.persistence.entity.UserRole;
 import com.stock.control.app.utils.AuthorityName;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -19,14 +19,14 @@ public class UserAuthorityRepository implements AuthorityProtocolRepository {
 
     @Override
     public void createAuthority(AuthorityName authority, Long userId) {
-        AuthorityEntity authorityEntity = authorityJpaRepository.findByName(authority.name());
+        Role role = authorityJpaRepository.findByName(authority.name());
 
-        UserAuthorityEntity userAuthorityEntity = userAuthorityJpaRepository
-                .findByUserIdAndAuthorityId(userId, authorityEntity.getId());
+        UserRole userRole = userAuthorityJpaRepository
+                .findByUserIdAndRoleId(userId, role.getId());
 
-        if(userAuthorityEntity == null) {
-            userAuthorityJpaRepository.save(UserAuthorityEntity.builder()
-                    .authorityId(authorityEntity.getId())
+        if(userRole == null) {
+            userAuthorityJpaRepository.save(UserRole.builder()
+                    .roleId(role.getId())
                     .userId(userId)
                     .build());
         }
@@ -34,24 +34,24 @@ public class UserAuthorityRepository implements AuthorityProtocolRepository {
 
     @Override
     public void revokeAuthority(AuthorityName authority, Long userId) {
-        AuthorityEntity authorityEntity = authorityJpaRepository.findByName(authority.name());
+        Role role = authorityJpaRepository.findByName(authority.name());
 
-        UserAuthorityEntity userAuthorityEntity = userAuthorityJpaRepository
-                .findByUserIdAndAuthorityId(userId, authorityEntity.getId());
+        UserRole userRole = userAuthorityJpaRepository
+                .findByUserIdAndRoleId(userId, role.getId());
 
-        if(userAuthorityEntity != null) {
-            userAuthorityJpaRepository.delete(userAuthorityEntity);
+        if(userRole != null) {
+            userAuthorityJpaRepository.delete(userRole);
         }
     }
 
     @Override
     public List<String> getAuthoritiesByUserId(Long userId) {
         List<String> authorities = new ArrayList<>();
-        List<UserAuthorityEntity> userAuthorities = userAuthorityJpaRepository.findByUserId(userId);
+        List<UserRole> userAuthorities = userAuthorityJpaRepository.findByUserId(userId);
 
-        for (UserAuthorityEntity userAuthority: userAuthorities) {
-            Optional<AuthorityEntity> authority = authorityJpaRepository.findById(userAuthority.getAuthorityId());
-            authority.ifPresent(authorityEntity -> authorities.add(authorityEntity.getName()));
+        for (UserRole userAuthority: userAuthorities) {
+            Optional<Role> authority = authorityJpaRepository.findById(userAuthority.getRoleId());
+            authority.ifPresent(role -> authorities.add(role.getName()));
         }
 
         return authorities;

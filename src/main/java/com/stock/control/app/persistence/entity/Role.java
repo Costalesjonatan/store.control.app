@@ -12,14 +12,14 @@ import lombok.Getter;
 @Getter
 @Builder
 @Entity(name = "authority")
-@Table(name = "AUTHORITY")
-public class AuthorityEntity {
+@Table(name = "ROLE")
+public class Role {
 
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "AUTHORITY_NAME")
+    @Column(name = "ROLE_NAME")
     private String name;
 }

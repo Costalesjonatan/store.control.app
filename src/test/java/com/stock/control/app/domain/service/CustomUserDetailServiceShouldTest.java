@@ -95,8 +95,8 @@ public class CustomUserDetailServiceShouldTest {
         verify(customUserDetailsService, times(1)).loadUserByUsername(userWhitAuthorities.getUsername());
         then(exceptionResult).isNull();
         then(userDetailsResult).isNotNull();
-        then(userDetailsResult.getAuthorities().size()).isEqualTo(1);
-        then(userDetailsResult.getAuthorities().contains(new SimpleGrantedAuthority("CUSTOMER"))).isTrue();
+        then(userDetailsResult.getAuthorities().size()).isEqualTo(2);
+        then(userDetailsResult.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_CUSTOMER"))).isTrue();
         then(userDetailsResult.getUsername()).isEqualTo(userWhitAuthorities.getUsername());
         then(userDetailsResult.getPassword()).isEqualTo(userWhitAuthorities.getPassword());
     }
@@ -123,7 +123,7 @@ public class CustomUserDetailServiceShouldTest {
                 .id(1L)
                 .username("username")
                 .password("password")
-                .authorities(List.of("CUSTOMER"))
+                .roles(List.of("CUSTOMER"))
                 .build();
     }
 

@@ -13,5 +13,5 @@ public class UserPojo {
     private Long id;
     private String username;
     private String password;
-    private List<String> authorities;
+    private List<String> roles;
 }

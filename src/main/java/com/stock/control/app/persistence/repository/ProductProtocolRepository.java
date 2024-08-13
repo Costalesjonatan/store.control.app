@@ -2,7 +2,7 @@ package com.stock.control.app.persistence.repository;
 
 import com.stock.control.app.domain.pojo.ProductPojo;
 import com.stock.control.app.domain.protocol.ProductRepositoryProtocol;
-import com.stock.control.app.persistence.entity.ProductEntity;
+import com.stock.control.app.persistence.entity.Product;
 import com.stock.control.app.persistence.mapper.ProductPersistenceMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -16,7 +16,7 @@ class ProductProtocolRepository implements ProductRepositoryProtocol {
     private final ProductPersistenceMapper productPersistenceMapper;
     @Override
     public void createProduct(ProductPojo productPojo) {
-        Optional<ProductEntity> optionalProductEntity = productJpaRepository.findBySku(productPojo.getSku());
+        Optional<Product> optionalProductEntity = productJpaRepository.findBySku(productPojo.getSku());
         if(optionalProductEntity.isPresent()) {
             throw new IllegalArgumentException("That product already exists.");
         }
@@ -24,7 +24,7 @@ class ProductProtocolRepository implements ProductRepositoryProtocol {
     }
     @Override
     public void updateProduct(ProductPojo productPojo) {
-        Optional<ProductEntity> optionalProductEntity = productJpaRepository.findBySku(productPojo.getSku());
+        Optional<Product> optionalProductEntity = productJpaRepository.findBySku(productPojo.getSku());
         if(optionalProductEntity.isEmpty()) {
             throw new IllegalArgumentException("That product not exists.");
         }
@@ -32,7 +32,7 @@ class ProductProtocolRepository implements ProductRepositoryProtocol {
     }
     @Override
     public ProductPojo getProductBySku(String sku) {
-        Optional<ProductEntity> optionalProductEntity = productJpaRepository.findBySku(sku);
+        Optional<Product> optionalProductEntity = productJpaRepository.findBySku(sku);
         if(optionalProductEntity.isEmpty()) {
             throw new IllegalArgumentException("That product not exists.");
         }
@@ -40,7 +40,7 @@ class ProductProtocolRepository implements ProductRepositoryProtocol {
     }
     @Override
     public void deleteProduct(String sku) {
-        Optional<ProductEntity> optionalProductEntity = productJpaRepository.findBySku(sku);
+        Optional<Product> optionalProductEntity = productJpaRepository.findBySku(sku);
         if(optionalProductEntity.isEmpty()) {
             throw new IllegalArgumentException("That product not exists.");
         }
